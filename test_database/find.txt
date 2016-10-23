@@ -1,0 +1,8 @@
+{
+  "views": {
+    "user": {
+      "map": "function (doc) {\n  if (doc.type==\"user\")\n    emit(doc.username, doc.password_hash)\n}"
+    }
+  },
+  "language": "javascript"
+}
