@@ -1,2 +1,2 @@
 class config:
-    server_url = 'http://localhost:5984/social'
+    couch_url = 'http://localhost:5984/social'
