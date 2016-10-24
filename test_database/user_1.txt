@@ -1,0 +1,9 @@
+{
+	"type":"user",
+	"username":"aldar",
+	"first_name":"Aldar",
+	"second_name":"Saranov",
+	"password_hash":"827ccb0eea8a706c4c34a16891f84e7b",
+	"date_of_birth":"10.05.1995",
+	"description":"Here is description about this user"
+}
