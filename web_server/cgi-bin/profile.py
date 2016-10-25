@@ -2,12 +2,12 @@ import cgi
 import urllib.request
 import hashlib
 import json
-from config import config
+from config import Config
 from output import Output
 
 # checks login and password in database, return matching flag and user id
 def CheckHash(login, password):
-    url = config.couch_url + '/_design/find/_view/user_by_username?key="' + login + '"'
+    url = Config.couch_url + '/_design/find/_view/user_by_username?key="' + login + '"'
     response = urllib.request.urlopen(url).read().decode("utf-8")
     parsed = json.loads(response)
     id = parsed["rows"][0]["id"]
@@ -16,13 +16,13 @@ def CheckHash(login, password):
     return (hash_actual == hash_proposed, id)
 
 def GetDocument(DocId):
-    url = config.couch_url + '/' + DocId
+    url = Config.couch_url + '/' + DocId
     response = urllib.request.urlopen(url).read().decode("utf-8")
     parsed = json.loads(response)
     return parsed
 
 def FindPostIdByUsername(username):
-    url = config.couch_url + '/_design/find/_view/post_by_username?key="' + username + '"'
+    url = Config.couch_url + '/_design/find/_view/post_by_username?startkey=["' + username + '"]&endkey=["' + username + '",{}]&include_docs=true'
     response = urllib.request.urlopen(url).read().decode("utf-8")
     parsed = json.loads(response)
     rows = parsed["rows"]

@@ -4,7 +4,7 @@
       "map": "function (doc) {\n  if (doc.type==\"user\")\n    emit(doc.username, doc.password_hash)\n}"
     },
 	"post_by_username": {
-      "map": "function (doc) {\n  if (doc.type==\"post\")\n    emit(doc.username,doc._id)\n}"
+      "map": "function (doc) {\n  if (doc.type==\"post\")\n    emit([doc.username, doc.date],doc._id)\n}"
     }
   },
   "language": "javascript"
