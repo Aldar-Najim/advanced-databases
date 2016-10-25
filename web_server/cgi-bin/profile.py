@@ -3,7 +3,9 @@ import urllib.request
 import hashlib
 import json
 from config import config
+from output import Output
 
+# checks login and password in database, return matching flag and user id
 def CheckHash(login, password):
     url = config.couch_url + '/_design/find/_view/user_by_username?key="' + login + '"'
     response = urllib.request.urlopen(url).read().decode("utf-8")
@@ -29,46 +31,6 @@ def FindPostIdByUsername(username):
         result.append(row["value"])
     return result
 
-
-def Output(accepted, user, posts):
-    print("Content-type: text/html\n")
-    print("""
-    <!DOCTYPE HTML>
-    <html>
-    <head>
-        <title>Social network</title>
-    </head>
-    <body>""")
-    if (accepted):
-        print("""
-        <table>
-            <tr>
-                <td>First name:</td>
-                <td>""" + user["first_name"] + """</td>
-            </tr>
-            <tr>
-                <td>Second name:</td>
-                <td>""" + user["second_name"] + """</td>
-            </tr>
-            <tr>
-                <td>Date of birth:</td>
-                <td>""" + user["date_of_birth"] + """</td>
-            </tr>
-            <tr>
-                <td>Description:</td>
-                <td>""" + user["description"] + """</td>
-            </tr>""")
-        for post in posts:
-            print("""
-            <tr>
-                <td>""" + post["date"] + """</td>
-                <td>""" + post["text"] + """</td>
-            </tr>""")
-        print("""</table>""")
-    else:
-        print("Invalid credentials")
-    print("</body></html>")
-
 ###################################################
 
 form = cgi.FieldStorage()
@@ -82,8 +44,8 @@ if (accepted):
     posts = []
     for id in post_ids:
         posts.append(GetDocument(id))
-    Output(True, user, posts)
+    Output.Profile(True, user, posts)
 else:
-    Output(False, None, None)
+    Output.Profile(False, None, None)
 
 
