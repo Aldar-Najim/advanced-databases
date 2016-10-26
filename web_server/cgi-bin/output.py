@@ -58,7 +58,7 @@ class Output:
         </head>
            <body>
               <div class="header">
-                <form action="/cgi-bin/sign-up.py">
+                <form action="/cgi-bin/sign_up.py">
                     <input type="submit" class="big_button signup_button" value="Sign up">
                 </form>
              </div>
@@ -117,3 +117,58 @@ class Output:
             </div>
         </body>
     </html>""")
+
+    @staticmethod
+    def SignUp():
+        Output.PrintHeader()
+        print("""
+        <body>
+            <div class="header">
+                <form action="/cgi-bin/sign_in.py">
+                    <input type="submit" class="big_button signup_button" value="Return">
+                </form>
+            </div>
+            <div class="content">
+                <table>
+                    <form action="/cgi-bin/profile.py">
+                        <tr>
+                            <td>
+                                <h3>Username</h3>
+                                <input type="text" name="USERNAME"><br><br>
+                            </td>
+                            <td>
+                                <h3>Password</h3>
+                                <input type="text" name="PASSWORD"><br><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>First name</h3>
+                                <input type="text" name="FIRST_NAME"><br><br>
+                            </td>
+                            <td>
+                                <h3>Second name</h3>
+                                <input type="text" name="SECOND_NAME"><br><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <h3>Password</h3>
+                                <input type="text" name="PASSWORD"><br><br>
+                            </td>
+                            <td>
+                                <h3>Date of birth</h3>
+                                <input type="date" name="DATE_OF_BIRTH"><br><br>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="submit" class="big_button signin_button" value="Finish">
+                            </td>
+                        </tr>
+                     </form>
+                </table>
+            </div>
+        </body>
+    </html>
+        """)
