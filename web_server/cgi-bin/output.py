@@ -9,23 +9,69 @@ class Output:
         print("Content-Type: text/html\n")
         print("""<!DOCTYPE HTML>
             <html>
-            <head>
-                <title>Social network</title>
-            </head>""")
+               <head>
+                  <meta charset="utf-8">
+                  <title>Social network</title>
+                  <style>
+                     .header {
+                     width:100%;
+                     height:100px;
+                     background: #46BDA8;
+                     }
+                     .content {
+                     width:60%;
+                     height:300px;
+                     margin-left:auto;
+                     margin-right:auto;
+                     }
+                    .big_button {
+                        background:#6CCABA;
+                        border-color:#6CCABA;
+                        color:white;
+                        font-size : 15px;
+                        font-weight: bold;
+                        border-radius: 14px
+                    }
+                    .signup_button{
+                        float:right;
+                        margin-right:20px;
+                        margin-top:20px;
+                        width: 8em;
+                        height: 4em;
+                    }
+                    .signin_button{
+                        margin-left:40px;
+                        margin-top:20px;
+                        width: 6em;
+                        height: 2em;
+                    }
+                    input[type="text"], textarea {
+                        background-color : #EDECE7;
+                    }
+                  </style>
+               </head>""")
 
     @staticmethod
-    def SignUp():
+    def SignIn():
         Output.PrintHeader()
         print("""
-        <body>
-            <form action="/cgi-bin/profile.py">
-                <h2>Username:</h2>
-                <input type="text" name="USERNAME"><br><br>
-                <h2>Password:</h2>
-                <input type="text" name="PASSWORD"><br><br>
-                <input type="submit" value="Sign-in"><br>
-            </form>
-        </body>
+        </head>
+           <body>
+              <div class="header">
+                <form action="/cgi-bin/sign-up.py">
+                    <input type="submit" class="big_button signup_button" value="Sign up">
+                </form>
+             </div>
+              <div class="content">
+                 <form action="/cgi-bin/profile.py">
+                    <h3>Username</h3>
+                    <input type="text" name="USERNAME"><br><br>
+                    <h3>Password</h3>
+                    <input type="text" name="PASSWORD"><br><br>
+                    <input type="submit" class="big_button signin_button" value="Sign-in"><br>
+                 </form>
+              </div>
+           </body>
         </html>""")
 
     @staticmethod
