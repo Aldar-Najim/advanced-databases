@@ -68,7 +68,7 @@ class Output:
                     <input type="text" name="USERNAME"><br><br>
                     <h3>Password</h3>
                     <input type="text" name="PASSWORD"><br><br>
-                    <input type="submit" class="big_button signin_button" value="Sign-in"><br>
+                    <input type="submit" class="big_button signin_button" value="Sign in"><br>
                  </form>
               </div>
            </body>
@@ -78,7 +78,13 @@ class Output:
     def Profile(accepted, user, posts):
         Output.PrintHeader()
         print("""
-        <body>""")
+        <body>
+            <div class="header">
+                <form action="/cgi-bin/sign_in.py">
+                    <input type="submit" class="big_button signup_button" value="Sign out">
+                </form>
+            </div>
+            <div class="content">""")
         if (accepted):
             print("""
             <table>
@@ -108,5 +114,6 @@ class Output:
         else:
             print("Invalid credentials")
         print("""
+            </div>
         </body>
-        </html>""")
+    </html>""")
