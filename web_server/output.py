@@ -14,15 +14,15 @@ class Output:
                   <title>Social network</title>
                   <style>
                      .header {
-                     width:100%;
-                     height:100px;
-                     background: #46BDA8;
+                         width:100%;
+                         height:100px;
+                         background: #46BDA8;
                      }
                      .content {
-                     width:60%;
-                     height:300px;
-                     margin-left:auto;
-                     margin-right:auto;
+                         width:60%;
+                         height:300px;
+                         margin-left:auto;
+                         margin-right:auto;
                      }
                     .big_button {
                         background:#6CCABA;
@@ -130,7 +130,7 @@ class Output:
             </div>
             <div class="content">
                 <table>
-                    <form action="/cgi-bin/profile.py">
+                    <form action="/cgi-bin/sign_up.py">
                         <tr>
                             <td>
                                 <h3>Username</h3>
