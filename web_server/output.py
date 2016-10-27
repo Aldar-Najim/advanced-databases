@@ -75,7 +75,7 @@ class Output:
         </html>""")
 
     @staticmethod
-    def Profile(accepted, user, posts):
+    def Profile(accepted, exists, user, posts):
         Output.PrintHeader()
         print("""
         <body>
@@ -85,7 +85,9 @@ class Output:
                 </form>
             </div>
             <div class="content">""")
-        if (accepted):
+        if not exists:
+            print("User does not exist")
+        elif accepted:
             print("""
             <table>
                 <tr>
@@ -113,6 +115,7 @@ class Output:
             print("""</table>""")
         else:
             print("Invalid credentials")
+
         print("""
             </div>
         </body>
