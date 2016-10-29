@@ -1,6 +1,5 @@
 
-# this class is responsible for generating html for web-clients
-# different methods correspond to different web-pages
+# this class is responsible for generating html code for web-clients
 
 class Output:
 
@@ -44,7 +43,7 @@ class Output:
         </table>""")
 
     @staticmethod
-    def PrintHeader():
+    def PrintHead():
         print("Content-Type: text/html\n")
         print("""<!DOCTYPE HTML>
             <html>
@@ -94,7 +93,7 @@ class Output:
 
     @staticmethod
     def SignIn():
-        Output.PrintHeader()
+        Output.PrintHead()
         print("""
         </head>
            <body>
@@ -117,7 +116,7 @@ class Output:
 
     @staticmethod
     def Profile(isAccepted, isExisting, user, posts):
-        Output.PrintHeader()
+        Output.PrintHead()
         print("""
         <body>
             <div class="header">
@@ -164,7 +163,7 @@ class Output:
 
     @staticmethod
     def SignUp(type):
-        Output.PrintHeader()
+        Output.PrintHead()
         print("""
         <body>
             <div class="header">

@@ -1,5 +1,14 @@
 from output import Output
 
-Output.SignIn()
 
 
+class PageSignIn:
+
+    @staticmethod
+    def Execute():
+        Output.SignIn()
+
+
+
+
+PageSignIn.Execute()

@@ -1,12 +1,13 @@
 import urllib.request
 import json
 
-
-class Config:
-    couch_url = 'http://localhost:5984/social/'
+from config import Config
 
 
-class Couch:
+
+
+class HttpApi:
+
     @staticmethod
     def Get(url):
         url_full = Config.couch_url + url
