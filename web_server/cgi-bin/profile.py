@@ -4,8 +4,8 @@ from database import Couch
 from output import Output
 
 # checks login and password in database, return matching flag and user id
-def CheckHash(login, password):
-    parsed = Couch.Get('_design/find/_view/hash_by_username?key="' + login + '"')
+def CheckHash(username, password):
+    parsed = Couch.Get('_design/find/_view/hash_by_username?key="' + username + '"')
     if len(parsed["rows"]) > 0:
         id = parsed["rows"][0]["id"]
         hash_actual = parsed["rows"][0]["value"]

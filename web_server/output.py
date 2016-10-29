@@ -4,6 +4,45 @@
 
 class Output:
 
+    # Auxiliary -------------------------------------
+    @staticmethod
+    def PrintSignUpForm():
+        print("""<table>
+            <form action="/cgi-bin/sign_up.py">
+                <tr>
+                    <td>
+                        <h3>Username</h3>
+                        <input type="text" name="USERNAME"><br><br>
+                    </td>
+                    <td>
+                        <h3>Password</h3>
+                        <input type="text" name="PASSWORD"><br><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>First name</h3>
+                        <input type="text" name="FIRST_NAME"><br><br>
+                    </td>
+                    <td>
+                        <h3>Second name</h3>
+                        <input type="text" name="SECOND_NAME"><br><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h3>Date of birth</h3>
+                        <input type="date" name="DATE_OF_BIRTH"><br><br>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input type="submit" class="big_button signin_button" value="Finish">
+                    </td>
+                </tr>
+             </form>
+        </table>""")
+
     @staticmethod
     def PrintHeader():
         print("Content-Type: text/html\n")
@@ -51,6 +90,8 @@ class Output:
                   </style>
                </head>""")
 
+    # Pages --------------------------------------------
+
     @staticmethod
     def SignIn():
         Output.PrintHeader()
@@ -75,7 +116,7 @@ class Output:
         </html>""")
 
     @staticmethod
-    def Profile(accepted, exists, user, posts):
+    def Profile(isAccepted, isExisting, user, posts):
         Output.PrintHeader()
         print("""
         <body>
@@ -85,9 +126,9 @@ class Output:
                 </form>
             </div>
             <div class="content">""")
-        if not exists:
+        if not isExisting:
             print("User does not exist")
-        elif accepted:
+        elif isAccepted:
             print("""
             <table>
                 <tr>
@@ -122,7 +163,7 @@ class Output:
     </html>""")
 
     @staticmethod
-    def SignUp():
+    def SignUp(type):
         Output.PrintHeader()
         print("""
         <body>
@@ -131,43 +172,19 @@ class Output:
                     <input type="submit" class="big_button signup_button" value="Return">
                 </form>
             </div>
-            <div class="content">
-                <table>
-                    <form action="/cgi-bin/sign_up.py">
-                        <tr>
-                            <td>
-                                <h3>Username</h3>
-                                <input type="text" name="USERNAME"><br><br>
-                            </td>
-                            <td>
-                                <h3>Password</h3>
-                                <input type="text" name="PASSWORD"><br><br>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>First name</h3>
-                                <input type="text" name="FIRST_NAME"><br><br>
-                            </td>
-                            <td>
-                                <h3>Second name</h3>
-                                <input type="text" name="SECOND_NAME"><br><br>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <h3>Date of birth</h3>
-                                <input type="date" name="DATE_OF_BIRTH"><br><br>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="submit" class="big_button signin_button" value="Finish">
-                            </td>
-                        </tr>
-                     </form>
-                </table>
-            </div>
+            <div class="content">""")
+
+        if type == "filled_not_all":
+            print("""<font color="red">All fields must be filled!</font>""")
+            Output.PrintSignUpForm()
+        elif type == "filling":
+            Output.PrintSignUpForm()
+        elif type == "filled_already_exists":
+            print("""User with such username is already existing""")
+        else:
+            print("""User account created""")
+
+        print("""</div>
         </body>
     </html>
         """)
