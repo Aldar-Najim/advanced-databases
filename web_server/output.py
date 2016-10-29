@@ -114,7 +114,7 @@ class Output:
                 </tr>""")
             print("""</table>""")
         else:
-            print("Invalid credentials")
+            print("Password is not correct")
 
         print("""
             </div>
@@ -155,10 +155,6 @@ class Output:
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                                <h3>Password</h3>
-                                <input type="text" name="PASSWORD"><br><br>
-                            </td>
                             <td>
                                 <h3>Date of birth</h3>
                                 <input type="date" name="DATE_OF_BIRTH"><br><br>

@@ -5,7 +5,7 @@ from output import Output
 
 # checks login and password in database, return matching flag and user id
 def CheckHash(login, password):
-    parsed = Couch.Request('_design/find/_view/hash_by_username?key="' + login + '"')
+    parsed = Couch.Get('_design/find/_view/hash_by_username?key="' + login + '"')
     if len(parsed["rows"]) > 0:
         id = parsed["rows"][0]["id"]
         hash_actual = parsed["rows"][0]["value"]
@@ -15,10 +15,10 @@ def CheckHash(login, password):
         return (False, False, None)
 
 def GetDocument(docId):
-    return Couch.Request(docId)
+    return Couch.Get(docId)
 
 def FindPostsIdByUsername(username):
-    parsed = Couch.Request('_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]&include_docs=true')
+    parsed = Couch.Get('_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]&include_docs=true')
     rows = parsed["rows"]
     result = []
     for row in rows:
@@ -28,13 +28,13 @@ def FindPostsIdByUsername(username):
 ###################################################
 
 form = cgi.FieldStorage()
-login = form.getfirst("USERNAME", "-")
+username = form.getfirst("USERNAME", "-")
 password = form.getfirst("PASSWORD", "-")
 
 posts = []
 user = None
 
-(accepted, exists, userId) = CheckHash(login, password)
+(accepted, exists, userId) = CheckHash(username, password)
 
 if accepted:
     user = GetDocument(userId)

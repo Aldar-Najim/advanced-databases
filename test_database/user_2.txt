@@ -4,6 +4,6 @@
 	"first_name":"Najim",
 	"second_name":"Essakali",
 	"password_hash":"827ccb0eea8a706c4c34a16891f84e7b",
-	"date_of_birth":"01.01.1995",
+	"date_of_birth":"01-01-1995",
 	"description":"Here is description about this user"
 }

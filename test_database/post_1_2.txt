@@ -2,6 +2,6 @@
 	"type":"post",
 	"username":"aldar",
 	"id_group":"-",
-	"date":"2016.09.02",
+	"date":"2016-09-02",
 	"text":"This social network is adorable!"
 }
