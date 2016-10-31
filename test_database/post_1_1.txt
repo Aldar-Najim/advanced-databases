@@ -3,5 +3,8 @@
 	"username":"aldar",
 	"id_group":"-",
 	"date":"2016-09-25",
-	"text":"My second post!"
+	"text":"My second post!",
+	"comments":
+	{
+	}
 }

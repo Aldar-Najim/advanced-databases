@@ -1,4 +1,6 @@
 from http.server import HTTPServer, CGIHTTPRequestHandler
-server_address = ("", 8001)
+from config import Config
+
+server_address = ("", Config.webPort)
 httpd = HTTPServer(server_address, CGIHTTPRequestHandler)
 httpd.serve_forever()

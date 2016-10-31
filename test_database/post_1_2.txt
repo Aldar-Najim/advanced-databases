@@ -2,6 +2,21 @@
 	"type":"post",
 	"username":"aldar",
 	"id_group":"-",
-	"date":"2016-09-02",
-	"text":"This social network is adorable!"
+	"date":"2016-09-02 12:00",
+	"text":"This social network is adorable!",
+	"comments":
+	{
+		"daa1291805040ce4ee3f79fd2300f218":
+		{
+			"username":"najim",
+			"text":"I agree",
+			"date":"2016-09-02 12:10"
+		},
+		"daa1291805040ce4ee3f79fd2301084c":
+		{
+			"username":"aldar",
+			"text":"Add me to friends",
+			"date":"2016-09-02 12:20"
+		}
+	}
 }

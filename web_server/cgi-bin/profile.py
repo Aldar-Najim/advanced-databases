@@ -23,19 +23,27 @@ class PageProfile:
         form = cgi.FieldStorage()
         username = form.getfirst("USERNAME", "-")
         password = form.getfirst("PASSWORD", "-")
+        page = form.getfirst("PAGE", "MYPAGE")
 
         posts = []
         user = None
 
         (accepted, exists, userId) = PageProfile.CheckHash(username, password)
 
-        if accepted:
+        if not exists:
+            Output.Profile("not_exists", username, password, user, posts)
+        elif accepted:
             user = Requests.GetDocument(userId)
-            post_ids = Requests.FindPostIdByUsername(user["username"])
-            for id in post_ids:
-                posts.append(Requests.GetDocument(id))
 
-        Output.Profile(accepted, exists, user, posts)
+            if page == "MYPAGE":
+                posts = Requests.FindPostIdByUsername(user["username"])
+                Output.Profile("mypage", username, password, user, posts)
+            elif page == "MYFRIENDS":
+                Output.Profile("myfriends", username, password, user, None)
+            elif page == "MYGROUPS":
+                Output.Profile("mygroups", username, password, user, None)
+        else:
+            Output.Profile("password_incorrect", username, password, user, posts)
 
 
 
