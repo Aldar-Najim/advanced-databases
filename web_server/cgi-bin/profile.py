@@ -8,32 +8,43 @@ class PageProfile:
 
     @staticmethod
     def CheckHash(username, password):
-        parsed = Requests.HashByUsername(username)
+        """
+            Takes username and password
+            Returns:
+            1) Flag: the actual hash matches the specified hash
+            2) Flag: such user exists
+            3) User id
+        """
+
+        parsed = Requests.FindHashByUsername(username)
         if len(parsed["rows"]) > 0:
             id = parsed["rows"][0]["id"]
             hash_actual = parsed["rows"][0]["value"]
-            hash_proposed = hashlib.md5(password.encode('utf-8')).hexdigest()
-            return (hash_actual == hash_proposed, True, id)
+            hash_specified = hashlib.md5(password.encode('utf-8')).hexdigest()
+            return (hash_actual == hash_specified, True, id)
         else:
             return (False, False, None)
 
-
     @staticmethod
-    def Execute():
+    def GetArguments():
         form = cgi.FieldStorage()
         username = form.getfirst("USERNAME", "-")
         password = form.getfirst("PASSWORD", "-")
         page = form.getfirst("PAGE", "MYPAGE")
+        return (username, password, page)
+
+    @staticmethod
+    def Execute():
+        (username, password, page) = PageProfile.GetArguments()
+        (accepted, exists, userId) = PageProfile.CheckHash(username, password)
 
         posts = []
         user = None
 
-        (accepted, exists, userId) = PageProfile.CheckHash(username, password)
-
         if not exists:
             Output.Profile("not_exists", username, password, user, posts)
         elif accepted:
-            user = Requests.GetDocument(userId)
+            user = Requests.DownloadDocument(userId)
 
             if page == "MYPAGE":
                 posts = Requests.FindPostIdByUsername(user["username"])

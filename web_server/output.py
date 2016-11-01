@@ -259,7 +259,7 @@ class Output:
         if status == "filled_not_all":
             print("""<font color="red">All fields must be filled!</font>""")
             Output.PrintSignUpForm()
-        elif status == "filling":
+        elif status == "not_filled":
             Output.PrintSignUpForm()
         elif status == "filled_already_exists":
             print("""User with such username is already existing""")

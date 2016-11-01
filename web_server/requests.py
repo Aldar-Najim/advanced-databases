@@ -6,12 +6,16 @@ from httpapi import HttpApi
 class Requests:
 
     @staticmethod
-    def HashByUsername(username):
+    def FindHashByUsername(username):
         return HttpApi.Get('_design/find/_view/hash_by_username?key="' + username + '"')
 
     @staticmethod
-    def GetDocument(docId):
-        return HttpApi.Get(docId)
+    def DownloadDocument(documentId):
+        return HttpApi.Get(documentId)
+
+    @staticmethod
+    def UploadDocument(jsonContent):
+        HttpApi.Post('', jsonContent)
 
     @staticmethod
     def FindPostIdByUsername(username):
