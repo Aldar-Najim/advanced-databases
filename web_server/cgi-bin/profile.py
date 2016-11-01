@@ -47,7 +47,7 @@ class PageProfile:
             user = Requests.DownloadDocument(userId)
 
             if page == "MYPAGE":
-                posts = Requests.FindPostIdByUsername(user["username"])
+                posts = Requests.FindPostsByUsername(user["username"])
                 Output.Profile("mypage", username, password, user, posts)
             elif page == "MYFRIENDS":
                 Output.Profile("myfriends", username, password, user, None)

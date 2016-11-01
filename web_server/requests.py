@@ -18,7 +18,7 @@ class Requests:
         HttpApi.Post('', jsonContent)
 
     @staticmethod
-    def FindPostIdByUsername(username):
+    def FindPostsByUsername(username):
         parsed = HttpApi.Get('_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]&include_docs=true')
         rows = parsed["rows"]
         result = []

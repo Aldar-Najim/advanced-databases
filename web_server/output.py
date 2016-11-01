@@ -1,4 +1,7 @@
 import base64
+
+from collections import OrderedDict
+
 from config import Config
 
 # this class is responsible for generating html code for web-clients
@@ -142,7 +145,9 @@ class Output:
                     <td>""" + post["text"] + """</td>
                 </tr>""")
 
-            for comment_id, comment_value in post["comments"].items():
+            posts_ordered = OrderedDict(sorted(post["comments"].items(), key=lambda t: t[1]["date"])) # sorting by date
+
+            for comment_id, comment_value in posts_ordered.items():
                 print("""
                     <tr>
                         <td>""" + comment_value["date"] + """</td>
