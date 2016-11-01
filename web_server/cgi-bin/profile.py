@@ -38,21 +38,22 @@ class PageProfile:
         (username, password, page) = PageProfile.GetArguments()
         (accepted, exists, userId) = PageProfile.CheckHash(username, password)
 
-        posts = []
+        posts = None
         user = None
 
         if not exists:
-            Output.Profile("not_exists", username, password, user, posts)
+            Output.Profile("not_exists", username, password, user, posts, None, None, None)
         elif accepted:
             user = Requests.DownloadDocument(userId)
 
             if page == "MYPAGE":
                 posts = Requests.FindPostsByUsername(user["username"])
-                Output.Profile("mypage", username, password, user, posts)
+                Output.Profile("mypage", username, password, user, posts, None, None, None)
             elif page == "MYFRIENDS":
-                Output.Profile("myfriends", username, password, user, None)
+                (parsed_confirmed, parsed_proposed, parsed_pending) = Requests.FindRelationshipsByUsername(username)
+                Output.Profile("myfriends", username, password, user, None, parsed_confirmed, parsed_proposed, parsed_pending)
             elif page == "MYGROUPS":
-                Output.Profile("mygroups", username, password, user, None)
+                Output.Profile("mygroups", username, password, user, None, None, None, None)
         else:
             Output.Profile("password_incorrect", username, password, user, posts)
 

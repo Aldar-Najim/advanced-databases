@@ -1,0 +1,8 @@
+{
+	"type":"relationship",
+	"username1":"aldar",
+	"username2":"john",
+	"confirmed1":"no",
+	"confirmed2":"yes",
+	"sort":"friend"
+}

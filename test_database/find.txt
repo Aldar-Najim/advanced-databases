@@ -8,6 +8,15 @@
     },
     "comment_by_post": {
       "map": "function (doc) {\n  if (doc.type == \"post\")\n    emit(doc._id, doc.comments)\n}"
+    },
+    "confirmed_relationship_by_username": {
+      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"yes\"))\n    {\n      emit(doc.username1, doc)\n      emit(doc.username2, doc)\n    }\n  }\n}"
+    },
+    "proposed_relationship_by_username": {
+      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit(doc.username2, doc)\n      \n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit(doc.username1, doc)\n  }\n}"
+    },
+    "pending_relationship_by_username": {
+      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit(doc.username2, doc)\n      \n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit(doc.username1, doc)\n  }\n}"
     }
   },
   "language": "javascript"
