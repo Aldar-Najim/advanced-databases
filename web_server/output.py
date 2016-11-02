@@ -45,6 +45,9 @@ class Output:
                         width: 8em;
                         height: 4em;
                     }
+                    .table_colored{
+                        background-color:#c8eae4;
+                    }
                     .signin_button{
                         margin-left:40px;
                         margin-top:20px;
@@ -195,7 +198,47 @@ class Output:
             </table>""")
 
     @staticmethod
-    def PrintRelationships(relationships_confirmed, relationships_proposed, relationships_pending):
+    def PrintSearchUserForm(username, password):
+        print('''
+            <table class="table_colored">
+                <form action="/cgi-bin/profile.py">
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <tr>
+                        <td>
+                            <h3>Username</h3>
+                            <input type="text" name="SEARCHED"><br><br>
+                        </td>
+                        <td>
+                            <h3>First name</h3>
+                            <input type="text" name="FIRST_NAME"><br><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h3>Second name</h3>
+                            <input type="text" name="SECOND_NAME"><br><br>
+                        </td>
+                        <td>
+                            <h3>Date of birth</h3>
+                            <input type="date" name="DATE_OF_BIRTH"><br><br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="submit" class="big_button signin_button" value="Search">
+                        </td>
+                    </tr>
+                    <input type=hidden name=PAGE value="SEARCH">
+                 </form>
+            </table>
+        ''')
+
+    @staticmethod
+    def PrintRelationships(relationships):
+        relationships_confirmed = relationships[0]
+        relationships_proposed = relationships[1]
+        relationships_pending = relationships[2]
         return None
 
     # Pages --------------------------------------------
@@ -221,7 +264,7 @@ class Output:
         print('</div></body></html>')
 
     @staticmethod
-    def Profile(status, username, password, userJson, posts, relationships_confirmed, relationships_proposed, relationships_pending):
+    def Profile(status, username, password, userJson, posts, relationships, search_data):
         Output.PrintHead()
         print('<body>')
 
@@ -250,7 +293,8 @@ class Output:
         elif status == "mypage":
             Output.PrintProfile(userJson, posts)
         elif status == "myfriends":
-            Output.PrintRelationships(relationships_confirmed, relationships_proposed, relationships_pending)
+            Output.PrintSearchUserForm(username, password)
+            Output.PrintRelationships(relationships)
             print('My friends')
         elif status == "mygroups":
             print('My groups')

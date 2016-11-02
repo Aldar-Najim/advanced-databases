@@ -34,7 +34,7 @@ class PageSignUp:
             Output.SignUp("not_filled")
         else:
             if username and password and first_name and second_name and date_of_birth:
-                jsonHashes = Requests.FindHashByUsername(username)
+                jsonHashes = Requests.FindUserByUsername(username)
 
                 if len(jsonHashes["rows"]) > 0:
                     Output.SignUp("filled_already_exists")

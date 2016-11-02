@@ -16,11 +16,11 @@ class PageProfile:
             3) User data
         """
 
-        parsed = Requests.FindHashByUsername(username)
-        if len(parsed) > 0:
-            hash_actual = parsed[0]["password_hash"]
+        users = Requests.FindUserByUsername(username)
+        if len(users) > 0:
+            hash_actual = users[0]["password_hash"]
             hash_specified = hashlib.md5(password.encode('utf-8')).hexdigest()
-            return (hash_actual == hash_specified, True, parsed[0])
+            return (hash_actual == hash_specified, True, users[0])
         else:
             return (False, False, None)
 
@@ -33,6 +33,51 @@ class PageProfile:
         return (username, password, page)
 
     @staticmethod
+    def GetSearchArguments():
+        form = cgi.FieldStorage()
+        searched = form.getfirst("SEARCHED", None)
+        first_name = form.getfirst("FIRST_NAME", None)
+        second_name = form.getfirst("SECOND_NAME", None)
+        date_of_birth = form.getfirst("DATE_OF_BIRTH", None)
+        return (searched, first_name, second_name, date_of_birth)
+
+    @staticmethod
+    def SearchUsers(searchData):
+        username = searchData[0]
+        firstName = searchData[1]
+        secondName = searchData[2]
+        dateOfBirth = searchData[3]
+
+        if username:
+            users = Requests.FindUserByUsername(username)
+            if len(users) > 0:
+                if firstName and (users[0]["first_name"] != firstName):
+                    return None
+                if secondName and (users[0]["second_name"] != secondName):
+                    return None
+                if dateOfBirth and (users[0]["date_of_birth"] != dateOfBirth):
+                    return None
+                return users
+            else:
+                return None
+        else:
+            if firstName and secondName and dateOfBirth:
+                return Requests.FindUsersByFnameSnameBday(firstName, secondName, dateOfBirth)
+            elif firstName and secondName and not dateOfBirth:
+                return Requests.FindUsersByFnameSnameBday(firstName, secondName, dateOfBirth)
+            elif firstName and not secondName and not dateOfBirth:
+                return Requests.FindUsersByFnameSnameBday(firstName, secondName, dateOfBirth)
+            elif not firstName and secondName and dateOfBirth:
+                return Requests.FindUsersBySnameBday(secondName, dateOfBirth)
+            elif not firstName and secondName and not dateOfBirth:
+                return Requests.FindUsersBySnameBday(secondName, dateOfBirth)
+            elif firstName and not secondName and dateOfBirth:
+                return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
+            else:
+                return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
+
+
+    @staticmethod
     def Execute():
         (username, password, page) = PageProfile.GetArguments()
         (accepted, exists, user) = PageProfile.CheckHash(username, password)
@@ -40,19 +85,25 @@ class PageProfile:
         posts = None
 
         if not exists:
-            Output.Profile("not_exists", username, password, user, posts, None, None, None)
+            Output.Profile("not_exists", username, password, user, posts, None, None)
         elif accepted:
 
             if page == "MYPAGE":
                 posts = Requests.FindPostsByUsername(user["username"])
-                Output.Profile("mypage", username, password, user, posts, None, None, None)
+                Output.Profile("mypage", username, password, user, posts, None, None)
             elif page == "MYFRIENDS":
-                (relationships_confirmed, relationships_proposed, relationships_pending) = Requests.FindRelationshipsByUsername(username)
-                Output.Profile("myfriends", username, password, user, None, relationships_confirmed, relationships_proposed, relationships_pending)
+                relationships = Requests.FindRelationshipsByUsername(username)
+                Output.Profile("myfriends", username, password, user, None, relationships, None)
+            elif page == "SEARCH":
+                relationships = Requests.FindRelationshipsByUsername(username)
+                searchData = PageProfile.GetSearchArguments()
+                users = PageProfile.SearchUsers(searchData)
+                Output.Profile("search", username, password, user, None, relationships, None)
             elif page == "MYGROUPS":
-                Output.Profile("mygroups", username, password, user, None, None, None, None)
+                Output.Profile("mygroups", username, password, user, None, None, None)
+
         else:
-            Output.Profile("password_incorrect", username, password, user, posts, None, None, None)
+            Output.Profile("password_incorrect", username, password, user, posts, None, None)
 
 
 
