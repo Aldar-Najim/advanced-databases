@@ -15,7 +15,8 @@ class Requests:
 
     @staticmethod
     def FindHashByUsername(username):
-        return HttpApi.Get('_design/find/_view/hash_by_username?key="' + username + '"')
+        json = HttpApi.Get('_design/find/_view/user_by_username?key="' + username + '"')
+        return Requests.ExtractRows(json)
 
     @staticmethod
     def DownloadDocument(documentId):
@@ -32,13 +33,13 @@ class Requests:
 
     @staticmethod
     def FindRelationshipsByUsername(username):
-        parsed_confirmed = HttpApi.Get('_design/find/_view/relationship_confirmed_by_username?key="' + username + '"')
-        relationships_confirmed = Requests.ExtractRows(parsed_confirmed)
+        json_confirmed = HttpApi.Get('_design/find/_view/relationship_confirmed_by_username?key="' + username + '"')
+        relationships_confirmed = Requests.ExtractRows(json_confirmed)
 
-        parsed_proposed = HttpApi.Get('_design/find/_view/relationship_proposed_by_username?key="' + username + '"')
-        relationships_proposed = Requests.ExtractRows(parsed_proposed)
+        json_proposed = HttpApi.Get('_design/find/_view/relationship_proposed_by_username?key="' + username + '"')
+        relationships_proposed = Requests.ExtractRows(json_proposed)
 
-        parsed_pending = HttpApi.Get('_design/find/_view/relationship_pending_by_username?key="' + username + '"')
-        relationships_pending  = Requests.ExtractRows(parsed_pending)
+        json_pending = HttpApi.Get('_design/find/_view/relationship_pending_by_username?key="' + username + '"')
+        relationships_pending  = Requests.ExtractRows(json_pending)
 
         return (relationships_confirmed, relationships_proposed, relationships_pending)

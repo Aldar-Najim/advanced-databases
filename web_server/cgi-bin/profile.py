@@ -13,15 +13,14 @@ class PageProfile:
             Returns:
             1) Flag: the actual hash matches the specified hash
             2) Flag: such user exists
-            3) User id
+            3) User data
         """
 
         parsed = Requests.FindHashByUsername(username)
-        if len(parsed["rows"]) > 0:
-            id = parsed["rows"][0]["id"]
-            hash_actual = parsed["rows"][0]["value"]
+        if len(parsed) > 0:
+            hash_actual = parsed[0]["password_hash"]
             hash_specified = hashlib.md5(password.encode('utf-8')).hexdigest()
-            return (hash_actual == hash_specified, True, id)
+            return (hash_actual == hash_specified, True, parsed[0])
         else:
             return (False, False, None)
 
@@ -36,15 +35,13 @@ class PageProfile:
     @staticmethod
     def Execute():
         (username, password, page) = PageProfile.GetArguments()
-        (accepted, exists, userId) = PageProfile.CheckHash(username, password)
+        (accepted, exists, user) = PageProfile.CheckHash(username, password)
 
         posts = None
-        user = None
 
         if not exists:
             Output.Profile("not_exists", username, password, user, posts, None, None, None)
         elif accepted:
-            user = Requests.DownloadDocument(userId)
 
             if page == "MYPAGE":
                 posts = Requests.FindPostsByUsername(user["username"])
@@ -55,7 +52,7 @@ class PageProfile:
             elif page == "MYGROUPS":
                 Output.Profile("mygroups", username, password, user, None, None, None, None)
         else:
-            Output.Profile("password_incorrect", username, password, user, posts)
+            Output.Profile("password_incorrect", username, password, user, posts, None, None, None)
 
 
 
