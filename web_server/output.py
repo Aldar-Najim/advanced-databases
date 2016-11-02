@@ -195,7 +195,7 @@ class Output:
             </table>""")
 
     @staticmethod
-    def PrintRelationships(parsed_confirmed, parsed_proposed, parsed_pending):
+    def PrintRelationships(relationships_confirmed, relationships_proposed, relationships_pending):
         return None
 
     # Pages --------------------------------------------
@@ -221,7 +221,7 @@ class Output:
         print('</div></body></html>')
 
     @staticmethod
-    def Profile(status, username, password, userJson, posts, parsed_confirmed, parsed_proposed, parsed_pending):
+    def Profile(status, username, password, userJson, posts, relationships_confirmed, relationships_proposed, relationships_pending):
         Output.PrintHead()
         print('<body>')
 
@@ -250,7 +250,7 @@ class Output:
         elif status == "mypage":
             Output.PrintProfile(userJson, posts)
         elif status == "myfriends":
-            #Output.
+            Output.PrintRelationships(relationships_confirmed, relationships_proposed, relationships_pending)
             print('My friends')
         elif status == "mygroups":
             print('My groups')

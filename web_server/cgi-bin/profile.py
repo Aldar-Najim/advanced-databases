@@ -50,8 +50,8 @@ class PageProfile:
                 posts = Requests.FindPostsByUsername(user["username"])
                 Output.Profile("mypage", username, password, user, posts, None, None, None)
             elif page == "MYFRIENDS":
-                (parsed_confirmed, parsed_proposed, parsed_pending) = Requests.FindRelationshipsByUsername(username)
-                Output.Profile("myfriends", username, password, user, None, parsed_confirmed, parsed_proposed, parsed_pending)
+                (relationships_confirmed, relationships_proposed, relationships_pending) = Requests.FindRelationshipsByUsername(username)
+                Output.Profile("myfriends", username, password, user, None, relationships_confirmed, relationships_proposed, relationships_pending)
             elif page == "MYGROUPS":
                 Output.Profile("mygroups", username, password, user, None, None, None, None)
         else:

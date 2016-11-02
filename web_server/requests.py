@@ -27,18 +27,18 @@ class Requests:
 
     @staticmethod
     def FindPostsByUsername(username):
-        parsed = HttpApi.Get('_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]&include_docs=true')
+        parsed = HttpApi.Get('_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]')
         return Requests.ExtractRows(parsed)
 
     @staticmethod
     def FindRelationshipsByUsername(username):
-        parsed_confirmed = HttpApi.Get('_design/find/_view/confirmed_relationship_by_username?key="' + username + '"')
+        parsed_confirmed = HttpApi.Get('_design/find/_view/relationship_confirmed_by_username?key="' + username + '"')
         relationships_confirmed = Requests.ExtractRows(parsed_confirmed)
 
-        parsed_proposed = HttpApi.Get('_design/find/_view/proposed_relationship_by_username?key="' + username + '"')
+        parsed_proposed = HttpApi.Get('_design/find/_view/relationship_proposed_by_username?key="' + username + '"')
         relationships_proposed = Requests.ExtractRows(parsed_proposed)
 
-        parsed_pending = HttpApi.Get('_design/find/_view/pending_relationship_by_username?key="' + username + '"')
+        parsed_pending = HttpApi.Get('_design/find/_view/relationship_pending_by_username?key="' + username + '"')
         relationships_pending  = Requests.ExtractRows(parsed_pending)
 
         return (relationships_confirmed, relationships_proposed, relationships_pending)

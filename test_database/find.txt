@@ -3,20 +3,32 @@
     "hash_by_username": {
       "map": "function (doc) {\n  if (doc.type==\"user\")\n    emit(doc.username, doc.password_hash)\n}"
     },
-	"post_by_username_date": {
+    "post_by_username_date": {
       "map": "function (doc) {\n  if (doc.type==\"post\")\n    emit([doc.username, doc.date],doc)\n}"
     },
     "comment_by_post": {
       "map": "function (doc) {\n  if (doc.type == \"post\")\n    emit(doc._id, doc.comments)\n}"
     },
-    "confirmed_relationship_by_username": {
+    "relationship_confirmed_by_username": {
       "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"yes\"))\n    {\n      emit(doc.username1, doc)\n      emit(doc.username2, doc)\n    }\n  }\n}"
     },
-    "proposed_relationship_by_username": {
+    "relationship_proposed_by_username": {
       "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit(doc.username2, doc)\n      \n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit(doc.username1, doc)\n  }\n}"
     },
-    "pending_relationship_by_username": {
+    "relationship_pending_by_username": {
       "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit(doc.username2, doc)\n      \n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit(doc.username1, doc)\n  }\n}"
+    },
+    "user_by_username": {
+      "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit(doc.username, doc)\n}"
+    },
+    "user_by_fname_sname_bday": {
+      "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit([doc.first_name, doc.second_name, doc.date_of_birth], doc)\n}"
+    },
+    "user_by_sname_bday": {
+      "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit([doc.second_name, doc.date_of_birth], doc)\n}"
+    },
+    "user_by_bday_fname": {
+      "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit([doc.date_of_birth, doc.first_name], doc)\n}"
     }
   },
   "language": "javascript"
