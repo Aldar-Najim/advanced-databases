@@ -1,9 +1,9 @@
 {
 	"type":"user",
-	"username":"john",
+	"username":"johny",
 	"first_name":"John",
-	"second_name":"Smith",
+	"second_name":"Brown",
 	"password_hash":"827ccb0eea8a706c4c34a16891f84e7b",
-	"date_of_birth":"1995-01-01",
+	"date_of_birth":"1990-01-01",
 	"description":"Here is description about this user"
 }
