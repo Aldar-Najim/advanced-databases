@@ -8,7 +8,7 @@ from config import Config
 
 class Output:
 
-    # Auxiliary -------------------------------------
+    # Prints -------------------------------------
 
     @staticmethod
     def PrintHead():
@@ -198,7 +198,7 @@ class Output:
             </table>""")
 
     @staticmethod
-    def PrintSearchUserForm(username, password):
+    def PrintUserSearchForm(username, password):
         print('''
             <table class="table_colored">
                 <form action="/cgi-bin/profile.py">
@@ -241,6 +241,40 @@ class Output:
         relationships_pending = relationships[2]
         return None
 
+    @staticmethod
+    def PrintUserList(foundUsers):
+        print('<table class="table_colored">')
+        for i in range(0, len(foundUsers)):
+            print("""
+                <tr>
+                    <td>""" + foundUsers[i]["first_name"] + ' ' + foundUsers[i]["second_name"] + """</td>
+                    <td>
+                    """)
+            if foundUsers[i]["relation"] == "-":
+                print("""
+                    <form action="/cgi-bin/profile.py">
+                        <input type="submit" class="big_button" value="Add">
+                    </form>
+                """)
+            elif foundUsers[i]["relation"] == "proposed":
+                print("""
+                    <form action="/cgi-bin/profile.py">
+                        <input type="submit" class="big_button" value="Confirm">
+                    </form>
+                    """)
+            elif foundUsers[i]["relation"] == "pending":
+                print('is pending')
+            elif foundUsers[i]["relation"] == "confirmed":
+                print('is your friend')
+            else:
+                print('is you')
+
+            print("""
+                    </td>
+                </tr>
+            """)
+        print('</table>')
+
     # Pages --------------------------------------------
 
     @staticmethod
@@ -264,7 +298,7 @@ class Output:
         print('</div></body></html>')
 
     @staticmethod
-    def Profile(status, username, password, userJson, posts, relationships, search_data):
+    def Profile(status, username, password, userJson, posts, relationships, foundUsers):
         Output.PrintHead()
         print('<body>')
 
@@ -280,22 +314,24 @@ class Output:
             Output.PrintHeader(buttonFileTo, buttonName, None, urlProfile, urlFriends, urlGroups)
         elif status == "mypage":
             Output.PrintHeader(buttonFileTo, buttonName, 1, urlProfile, urlFriends, urlGroups)
-        elif status == "myfriends":
+        elif status == "myfriends" or status == "search":
             Output.PrintHeader(buttonFileTo, buttonName, 2, urlProfile, urlFriends, urlGroups)
         elif status == "mygroups":
             Output.PrintHeader(buttonFileTo, buttonName, 3, urlProfile, urlFriends, urlGroups)
 
 
-        print('<div class="content">')
+        print('<div class="content"><br><br>')
 
         if status == "not_exists":
             print("User does not exist")
         elif status == "mypage":
             Output.PrintProfile(userJson, posts)
         elif status == "myfriends":
-            Output.PrintSearchUserForm(username, password)
+            Output.PrintUserSearchForm(username, password)
             Output.PrintRelationships(relationships)
             print('My friends')
+        elif status == "search":
+            Output.PrintUserList(foundUsers)
         elif status == "mygroups":
             print('My groups')
         else:

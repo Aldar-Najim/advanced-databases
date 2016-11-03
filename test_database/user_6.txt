@@ -1,0 +1,9 @@
+{
+	"type":"user",
+	"username":"michelle",
+	"first_name":"Michelle",
+	"second_name":"Delacroix",
+	"password_hash":"827ccb0eea8a706c4c34a16891f84e7b",
+	"date_of_birth":"1990-01-01",
+	"description":"Here is description about this user"
+}

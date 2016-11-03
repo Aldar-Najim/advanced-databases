@@ -1,3 +1,5 @@
+cls
+
 curl -X DELETE http://127.0.0.1:5984/social
 curl -X PUT http://127.0.0.1:5984/social
 
@@ -9,6 +11,7 @@ curl -X PUT http://127.0.0.1:5984/social/cff457c34484830b569a999a27016314 -d @us
 curl -X PUT http://127.0.0.1:5984/social/a8af1fde90e8f71681da7ce37300242f -d @user_3.txt
 curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd001a08 -d @user_4.txt
 curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd009755 -d @user_5.txt
+curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd00ce84 -d @user_6.txt
 
 :: Posts of users -----------------------------------------------------------------------------------------------------
 

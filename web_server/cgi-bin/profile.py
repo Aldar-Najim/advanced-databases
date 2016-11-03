@@ -73,8 +73,44 @@ class PageProfile:
                 return Requests.FindUsersBySnameBday(secondName, dateOfBirth)
             elif firstName and not secondName and dateOfBirth:
                 return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
+            elif not firstName and not secondName and not dateOfBirth:
+                return Requests.FindAllUsers()
             else:
                 return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
+
+    @staticmethod
+    def tagUsersByRelations(users, relationships, myUsername):
+        for i in range(0, len(users)):
+            found = False
+
+            if myUsername == users[i]["username"]:
+                users[i]["relation"] = "me"
+                found = True
+
+            for j in range(0, len(relationships[0])):
+                if users[i]["username"] == relationships[0][j][0]:
+                    users[i]["relation"] = "confirmed"
+                    found = True
+                    break
+
+            if not found:
+                for j in range(0, len(relationships[1])):
+                    if users[i]["username"] == relationships[1][j][0]:
+                        users[i]["relation"] = "proposed"
+                        found = True
+                        break
+
+            if not found:
+                for j in range(0, len(relationships[2])):
+                    if users[i]["username"] == relationships[2][j][0]:
+                        users[i]["relation"] = "pending"
+                        found = True
+                        break
+
+            if not found:
+                users[i]["relation"] = "-"
+
+        return users
 
 
     @staticmethod
@@ -98,7 +134,8 @@ class PageProfile:
                 relationships = Requests.FindRelationshipsByUsername(username)
                 searchData = PageProfile.GetSearchArguments()
                 users = PageProfile.SearchUsers(searchData)
-                Output.Profile("search", username, password, user, None, relationships, None)
+                PageProfile.tagUsersByRelations(users, relationships, username)
+                Output.Profile("search", username, password, user, None, relationships, users)
             elif page == "MYGROUPS":
                 Output.Profile("mygroups", username, password, user, None, None, None)
 
