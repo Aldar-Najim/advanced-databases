@@ -61,7 +61,7 @@ class Output:
                </head>""")
 
     @staticmethod
-    def PrintHeader(fileTo, buttonName, tab, urlProfile, urlFriends, urlGroups):
+    def PrintHeader(fileTo, buttonName, tab, urlTabs):
         if not tab:
             print("""
                     <div class="header">
@@ -79,24 +79,24 @@ class Output:
                             <td width="10%">
                 ''')
             if tab == 1:
-                Output.PrintImage('myprofile_line.png', urlProfile)
+                Output.PrintImage('myprofile_line.png', urlTabs[0])
             else:
-                Output.PrintImage('myprofile_noline.png', urlProfile)
+                Output.PrintImage('myprofile_noline.png', urlTabs[0])
             print("""
                             </td>
                             <td width="10%">
                 """)
             if tab == 2:
-                Output.PrintImage('myfriends_line.png', urlFriends)
+                Output.PrintImage('myfriends_line.png', urlTabs[1])
             else:
-                Output.PrintImage('myfriends_noline.png', urlFriends)
+                Output.PrintImage('myfriends_noline.png', urlTabs[1])
             print("""
                             </td>
                             <td width="10%">""")
             if tab == 3:
-                Output.PrintImage('mygroups_line.png', urlGroups)
+                Output.PrintImage('mygroups_line.png', urlTabs[2])
             else:
-                Output.PrintImage('mygroups_noline.png', urlGroups)
+                Output.PrintImage('mygroups_noline.png', urlTabs[2])
             print("""
                             </td>
                             <td width="20%">
@@ -122,9 +122,10 @@ class Output:
         print(imageTag)
 
     @staticmethod
-    def PrintProfile(user, posts):
+    def PrintProfile(user, posts, users):
         print("""
-            <table>
+            <table class="table_colored">
+                <tr><h2>Profile</h2></tr>
                 <tr>
                     <td>First name:</td>
                     <td>""" + user["first_name"] + """</td>
@@ -137,27 +138,41 @@ class Output:
                     <td>Date of birth:</td>
                     <td>""" + user["date_of_birth"] + """</td>
                 </tr>
-                <tr>
-                    <td>Description:</td>
-                    <td>""" + user["description"] + """</td>
-                </tr>""")
+            </table><br><br>""")
         for post in posts:
             print("""
-                <tr>
-                    <td>""" + post["date"] + """</td>
-                    <td>""" + post["text"] + """</td>
-                </tr>""")
+                <table class="table_colored">
+                    <tr><h2>Post</h2></tr>
+                    <tr>
+                        <td><h2>""" + post["date"] + """</h2></td>
+                        <td><h2>""" + post["text"] + """</h2></td>
+                        <td>""")
+            Output.PrintImage('trash.png', '')
+            print('</td></tr>')
 
-            posts_ordered = OrderedDict(sorted(post["comments"].items(), key=lambda t: t[1]["date"])) # sorting by date
+            comments_ordered = OrderedDict(sorted(post["comments"].items(), key=lambda t: t[1]["date"])) # sorting by date
 
-            for comment_id, comment_value in posts_ordered.items():
+            for comment_id, comment in comments_ordered.items():
+
+                foo = users[comment["username"]]["first_name"] + " " + users[comment["username"]]["second_name"]
                 print("""
                     <tr>
-                        <td>""" + comment_value["date"] + """</td>
-                        <td>""" + comment_value["text"] + """</td>
+                        <td>""" + foo + """</td>
+                        <td>""" + comment["text"] + """</td>
                     </tr>""")
 
-        print("""</table>""")
+            print('''
+            <tr>
+                <td></td>
+                <td>
+                    <form action="/cgi-bin/profile.py">
+                        <input type="text" name="COMMENT">
+                        <input type="submit" class="big_button" value="Add comment">
+                    </form>
+                </td>
+            </tr>
+            ''')
+            print('</table><br><br>')
 
     @staticmethod
     def PrintSignUpForm():
@@ -242,38 +257,69 @@ class Output:
         return None
 
     @staticmethod
-    def PrintUserList(foundUsers):
+    def PrintUserList(username, password, foundUsers):
         print('<table class="table_colored">')
         for i in range(0, len(foundUsers)):
-            print("""
+            print('''
                 <tr>
-                    <td>""" + foundUsers[i]["first_name"] + ' ' + foundUsers[i]["second_name"] + """</td>
                     <td>
-                    """)
+                        <a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                            '&WATCHUSERNAME=' + foundUsers[i]["username"] + '&PAGE=WATCH">' + foundUsers[i]["first_name"] + ' ' + foundUsers[i]["second_name"] + '</a>')
             if foundUsers[i]["relation"] == "-":
                 print("""
-                    <form action="/cgi-bin/profile.py">
-                        <input type="submit" class="big_button" value="Add">
-                    </form>
+                    <td></td>
+                    <td>
+                        <form action="/cgi-bin/profile.py">
+                            <input type="submit" class="big_button" value="Add">
+                        </form>
+                    </td>
                 """)
             elif foundUsers[i]["relation"] == "proposed":
                 print("""
-                    <form action="/cgi-bin/profile.py">
-                        <input type="submit" class="big_button" value="Confirm">
-                    </form>
+                    <td>added you</td>
+                    <td>
+                        <form action="/cgi-bin/profile.py">
+                            <input type="submit" class="big_button" value="Confirm">
+                        </form>
+                    </td>
                     """)
             elif foundUsers[i]["relation"] == "pending":
-                print('is pending')
+                print("""<td>is pending</td>
+                        <td>
+                            <form action="/cgi-bin/profile.py">
+                                <input type="submit" class="big_button" value="Reject">
+                            </form>
+                        </td>""")
             elif foundUsers[i]["relation"] == "confirmed":
-                print('is your friend')
+                print("""
+                    <td>you are friends</td>
+                    <td>
+                        <form action="/cgi-bin/profile.py">
+                            <input type="submit" class="big_button" value="Remove">
+                        </form>
+                    </td>
+                    """)
             else:
-                print('is you')
+                print('<td>is you</td><td></td>')
 
             print("""
-                    </td>
+                </tr>
+                <tr>
+                    <td height="30"></td>
+                    <td height="30"></td>
                 </tr>
             """)
         print('</table>')
+
+    # Auxiliary ----------------------------------------
+
+    @staticmethod
+    def GetTabUrls(username, password):
+        urlUserPassword = Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password
+        urlProfile = urlUserPassword + '&PAGE=MYPAGE'
+        urlFriends = urlUserPassword + '&PAGE=MYFRIENDS'
+        urlGroups = urlUserPassword + '&PAGE=MYGROUPS'
+        return (urlProfile, urlFriends, urlGroups)
 
     # Pages --------------------------------------------
 
@@ -298,40 +344,38 @@ class Output:
         print('</div></body></html>')
 
     @staticmethod
-    def Profile(status, username, password, userJson, posts, relationships, foundUsers):
+    def Profile(status, username, password, user, posts, users, relationships, foundUsers):
         Output.PrintHead()
         print('<body>')
 
         buttonFileTo = "sign_in.py"
         buttonName = "Sign out"
 
-        urlUserPassword = Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password
-        urlProfile = urlUserPassword + '&PAGE=MYPAGE'
-        urlFriends = urlUserPassword + '&PAGE=MYFRIENDS'
-        urlGroups = urlUserPassword + '&PAGE=MYGROUPS'
+        tabUrls = Output.GetTabUrls(username, password)
 
         if (status == "not_exists") or (status == "password_incorrect"):
-            Output.PrintHeader(buttonFileTo, buttonName, None, urlProfile, urlFriends, urlGroups)
+            Output.PrintHeader(buttonFileTo, buttonName, None, tabUrls)
         elif status == "mypage":
-            Output.PrintHeader(buttonFileTo, buttonName, 1, urlProfile, urlFriends, urlGroups)
+            Output.PrintHeader(buttonFileTo, buttonName, 1, tabUrls)
         elif status == "myfriends" or status == "search":
-            Output.PrintHeader(buttonFileTo, buttonName, 2, urlProfile, urlFriends, urlGroups)
+            Output.PrintHeader(buttonFileTo, buttonName, 2, tabUrls)
         elif status == "mygroups":
-            Output.PrintHeader(buttonFileTo, buttonName, 3, urlProfile, urlFriends, urlGroups)
-
+            Output.PrintHeader(buttonFileTo, buttonName, 3, tabUrls)
 
         print('<div class="content"><br><br>')
 
         if status == "not_exists":
             print("User does not exist")
         elif status == "mypage":
-            Output.PrintProfile(userJson, posts)
+            Output.PrintProfile(user, posts, users)
         elif status == "myfriends":
             Output.PrintUserSearchForm(username, password)
             Output.PrintRelationships(relationships)
             print('My friends')
         elif status == "search":
-            Output.PrintUserList(foundUsers)
+            Output.PrintUserList(username, password, foundUsers)
+        elif status == "watch":
+            print('Other user')
         elif status == "mygroups":
             print('My groups')
         else:

@@ -7,22 +7,16 @@ from requests import Requests
 class PageProfile:
 
     @staticmethod
-    def CheckHash(username, password):
+    def CheckHash(username, password, user):
         """
-            Takes username and password
+            Takes username, password and found user data
             Returns:
-            1) Flag: the actual hash matches the specified hash
-            2) Flag: such user exists
-            3) User data
+            Flag: the actual hash matches the specified hash
         """
 
-        users = Requests.FindUserByUsername(username)
-        if len(users) > 0:
-            hash_actual = users[0]["password_hash"]
-            hash_specified = hashlib.md5(password.encode('utf-8')).hexdigest()
-            return (hash_actual == hash_specified, True, users[0])
-        else:
-            return (False, False, None)
+        hash_actual = user["password_hash"]
+        hash_specified = hashlib.md5(password.encode('utf-8')).hexdigest()
+        return hash_actual == hash_specified
 
     @staticmethod
     def GetArguments():
@@ -40,6 +34,11 @@ class PageProfile:
         second_name = form.getfirst("SECOND_NAME", None)
         date_of_birth = form.getfirst("DATE_OF_BIRTH", None)
         return (searched, first_name, second_name, date_of_birth)
+
+    @staticmethod
+    def GetWatchArgument():
+        form = cgi.FieldStorage()
+        return form.getfirst("WATCHUSERNAME", None)
 
     @staticmethod
     def SearchUsers(searchData):
@@ -79,7 +78,7 @@ class PageProfile:
                 return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
 
     @staticmethod
-    def tagUsersByRelations(users, relationships, myUsername):
+    def TagUsersByRelations(users, relationships, myUsername):
         for i in range(0, len(users)):
             found = False
 
@@ -112,35 +111,60 @@ class PageProfile:
 
         return users
 
+    @staticmethod
+    def GetUsersByPostList(posts):
+        result = {}
+
+        if len(posts) > 0:
+            result[posts[0]["username"]] = Requests.FindUserByUsername(posts[0]["username"])[0]
+
+        for i in range(0, len(posts)):
+            for comment_id, comment in posts[i]["comments"].items():
+                result[comment["username"]] = Requests.FindUserByUsername(comment["username"])[0]
+
+        return result
 
     @staticmethod
     def Execute():
         (username, password, page) = PageProfile.GetArguments()
-        (accepted, exists, user) = PageProfile.CheckHash(username, password)
+        user = Requests.FindUserByUsername(username)
+
+        if len(user) > 0:
+            exists = True
+            user = user[0]
+            accepted = PageProfile.CheckHash(username, password, user)
+        else:
+            exists = False
 
         posts = None
 
         if not exists:
-            Output.Profile("not_exists", username, password, user, posts, None, None)
+            Output.Profile("not_exists", username, password, user, None, posts, None, None)
         elif accepted:
 
             if page == "MYPAGE":
                 posts = Requests.FindPostsByUsername(user["username"])
-                Output.Profile("mypage", username, password, user, posts, None, None)
+                users = PageProfile.GetUsersByPostList(posts)
+                Output.Profile("mypage", username, password, user, posts, users, None, None)
             elif page == "MYFRIENDS":
                 relationships = Requests.FindRelationshipsByUsername(username)
-                Output.Profile("myfriends", username, password, user, None, relationships, None)
+                Output.Profile("myfriends", username, password, user, None, None, relationships, None)
             elif page == "SEARCH":
                 relationships = Requests.FindRelationshipsByUsername(username)
                 searchData = PageProfile.GetSearchArguments()
                 users = PageProfile.SearchUsers(searchData)
-                PageProfile.tagUsersByRelations(users, relationships, username)
-                Output.Profile("search", username, password, user, None, relationships, users)
+                PageProfile.TagUsersByRelations(users, relationships, username)
+                Output.Profile("search", username, password, user, None, None, relationships, users)
+            elif page == "WATCH":
+                watchUsername = PageProfile.GetWatchArgument()
+                user = Requests.FindUserByUsername(watchUsername)
+                posts = Requests.FindPostsByUsername(user["username"])
+                Output.Profile("watch", username, password, user, posts, None, None, None)
             elif page == "MYGROUPS":
-                Output.Profile("mygroups", username, password, user, None, None, None)
+                Output.Profile("mygroups", username, password, user, None, None, None, None)
 
         else:
-            Output.Profile("password_incorrect", username, password, user, posts, None, None)
+            Output.Profile("password_incorrect", username, password, user, posts, None, None, None)
 
 
 
