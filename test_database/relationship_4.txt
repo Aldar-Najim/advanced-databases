@@ -3,6 +3,5 @@
 	"username1":"aldar",
 	"username2":"johny",
 	"confirmed1":"yes",
-	"confirmed2":"no",
-	"sort":"friend"
+	"confirmed2":"no"
 }
