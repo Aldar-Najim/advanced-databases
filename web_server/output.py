@@ -161,7 +161,7 @@ class Output:
 
     @staticmethod
     def PrintPostSequence(username, password, posts, users):
-        for post in posts:
+        for post in reversed(posts):
             print("""
                 <table class="table_colored">
                     <tr><h2>Post</h2></tr>
@@ -192,8 +192,7 @@ class Output:
                 else:
                     print('''
                         <tr>
-                            <td><a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                          '&WATCHUSERNAME=' + comment["username"] + '&PAGE=WATCH">' + name + """</a></td>
+                            <td>''' + name + """</td>
                             <td>""" + comment["text"] + """</td>
                             <td>""" + comment["date"])
 
@@ -204,13 +203,17 @@ class Output:
             print('''
             <tr>
                 <form action="/cgi-bin/profile.py">
-                <td></td>
-                <td>
-                    <input type="text" name="COMMENT">
-                </td>
-                <td>
-                    <input type="submit" class="big_button" value="Add comment">
-                </td>
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <td></td>
+                    <td>
+                        <input type="text" name="COMMENT">
+                    </td>
+                    <td>
+                        <input type="submit" class="big_button" value="Add comment">
+                    </td>
+                    <input type=hidden name=POSTID value="''' + post["_id"] + '''">
+                    <input type=hidden name=PAGE value="COMMENTPROFILE">
                 </form>
             </tr>
             ''')
@@ -432,6 +435,7 @@ class Output:
                     <h3>Password</h3>
                     <input type="text" name="PASSWORD"><br><br>
                     <input type="submit" class="big_button signin_button" value="Sign in"><br>
+                    <input type=hidden name=PAGE value="MYPAGE">
                  </form>
         ''')
 

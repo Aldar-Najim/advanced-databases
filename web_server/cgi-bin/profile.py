@@ -123,13 +123,17 @@ class PageProfile:
         return result
 
     @staticmethod
+    def GetCurrentDate():
+        now = datetime.datetime.now()
+        return now.strftime("%Y-%m-%d %H:%M")
+
+    @staticmethod
     def AddPostProfile(username, content):
         document = {}
         document["type"] = "post"
         document["username"] = username
         document["id_group"] = "-"
-        now = datetime.datetime.now()
-        document["date"] = now.strftime("%Y-%m-%d %H:%M")
+        document["date"] = PageProfile.GetCurrentDate()
         document["text"] = content
         document["comments"] = {}
         jsonDoc = json.dumps(document, separators=(',',':'))
@@ -149,10 +153,29 @@ class PageProfile:
         return result
 
     @staticmethod
+    def GetCommentProfileArgument():
+        form = cgi.FieldStorage()
+        comment = form.getfirst("COMMENT", None)
+        postId = form.getfirst("POSTID", None)
+        return (comment, postId)
+
+    @staticmethod
     def GetPostProfileArguments():
         form = cgi.FieldStorage()
         content = form.getfirst("POST", None)
         return (content)
+
+    @staticmethod
+    def AddCommentToPost(username, password, comment, postId):
+        postContent = Requests.DownloadDocument(postId)
+        newComment = {"username":username,"text":comment,"date":PageProfile.GetCurrentDate()}
+        uuid = Requests.GenerateUUID()
+        postContent["comments"][uuid] = newComment
+        jsonDoc = json.dumps(postContent, separators=(',', ':'))
+        Requests.UploadDocument(jsonDoc)
+        a=1
+
+
 
     @staticmethod
     def Execute():
@@ -196,6 +219,12 @@ class PageProfile:
                 Output.Profile("watch", username, password, user, posts, None, None, None)
             elif page == "MYGROUPS":
                 Output.Profile("mygroups", username, password, user, None, None, None, None)
+            elif page == "COMMENTPROFILE":
+                arguments = PageProfile.GetCommentProfileArgument()
+                PageProfile.AddCommentToPost(username, password, arguments[0], arguments[1])
+                posts = Requests.FindPostsByUsername(user["username"])
+                users = PageProfile.GetUsersByPostList(posts)
+                Output.Profile("mypage", username, password, user, posts, users, None, None)
             elif page == "POSTPROFILE":
                 content = PageProfile.GetPostProfileArguments()
                 PageProfile.AddPostProfile(username, content)
