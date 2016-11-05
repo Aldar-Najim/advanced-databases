@@ -47,6 +47,7 @@ class Output:
                     }
                     .table_colored{
                         background-color:#c8eae4;
+                        width: 100%;
                     }
                     .signin_button{
                         margin-left:40px;
@@ -122,7 +123,7 @@ class Output:
         print(imageTag)
 
     @staticmethod
-    def PrintProfile(user, posts, users):
+    def PrintProfile(username, password, user, posts, users):
         print("""
             <table class="table_colored">
                 <tr><h2>Profile</h2></tr>
@@ -139,37 +140,78 @@ class Output:
                     <td>""" + user["date_of_birth"] + """</td>
                 </tr>
             </table><br><br>""")
+        print('''
+            <table class="table_colored">
+                <form action="/cgi-bin/profile.py">
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <tr>
+                        <td>
+                            <input type="text" name="POST">
+                        </td>
+                        <td>
+                            <input type="submit" class="big_button" value="Add post">
+                        </td>
+                    </tr>
+                    <input type=hidden name=PAGE value="POSTPROFILE">
+                </form>
+            </table>
+        ''')
+        Output.PrintPostSequence(username, password, posts, users)
+
+    @staticmethod
+    def PrintPostSequence(username, password, posts, users):
         for post in posts:
             print("""
                 <table class="table_colored">
                     <tr><h2>Post</h2></tr>
                     <tr>
-                        <td><h2>""" + post["date"] + """</h2></td>
+                        <td>""" + post["date"] + """</td>
                         <td><h2>""" + post["text"] + """</h2></td>
                         <td>""")
-            Output.PrintImage('trash.png', '')
+
+            if username == post["username"]:
+                Output.PrintImage('trash.png', '')
+
             print('</td></tr>')
 
-            comments_ordered = OrderedDict(sorted(post["comments"].items(), key=lambda t: t[1]["date"])) # sorting by date
+            comments_ordered = OrderedDict(
+                sorted(post["comments"].items(), key=lambda t: t[1]["date"]))  # sorting by date
 
             for comment_id, comment in comments_ordered.items():
+                name = users[comment["username"]]["first_name"] + " " + users[comment["username"]]["second_name"]
 
-                foo = users[comment["username"]]["first_name"] + " " + users[comment["username"]]["second_name"]
-                print("""
-                    <tr>
-                        <td>""" + foo + """</td>
-                        <td>""" + comment["text"] + """</td>
-                    </tr>""")
+                if username != comment["username"]:
+                    print('''
+                        <tr>
+                            <td><a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                          '&WATCHUSERNAME=' + comment["username"] + '&PAGE=WATCH">' + name + """</a></td>
+                            <td>""" + comment["text"] + """</td>
+                            <td>""" + comment["date"] + """
+                        </tr>""")
+                else:
+                    print('''
+                        <tr>
+                            <td><a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                          '&WATCHUSERNAME=' + comment["username"] + '&PAGE=WATCH">' + name + """</a></td>
+                            <td>""" + comment["text"] + """</td>
+                            <td>""" + comment["date"])
+
+                    Output.PrintImage("trash.png", "")
+
+                    print('</td></tr>')
 
             print('''
             <tr>
+                <form action="/cgi-bin/profile.py">
                 <td></td>
                 <td>
-                    <form action="/cgi-bin/profile.py">
-                        <input type="text" name="COMMENT">
-                        <input type="submit" class="big_button" value="Add comment">
-                    </form>
+                    <input type="text" name="COMMENT">
                 </td>
+                <td>
+                    <input type="submit" class="big_button" value="Add comment">
+                </td>
+                </form>
             </tr>
             ''')
             print('</table><br><br>')
@@ -247,24 +289,76 @@ class Output:
                     <input type=hidden name=PAGE value="SEARCH">
                  </form>
             </table>
+            <br><br>
         ''')
 
     @staticmethod
-    def PrintRelationships(relationships):
+    def PrintRelationships(username, password, relationships, users):
         relationships_confirmed = relationships[0]
         relationships_proposed = relationships[1]
         relationships_pending = relationships[2]
-        return None
+
+        print('<table class="table_colored">')
+        for i in range(0, len(relationships_confirmed)):
+            print('<tr>')
+            print('<td>')
+            print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                            '&WATCHUSERNAME=' + relationships_confirmed[i][0] + '&PAGE=WATCH">' +
+                            users[relationships_confirmed[i][0]]["first_name"] + ' ' + users[relationships_confirmed[i][0]]["second_name"] + '</a></td>')
+            print('<td>you are friends</td>')
+            print("""
+                    <td>
+                        <form action="/cgi-bin/profile.py">
+                            <input type="submit" class="big_button" value="Remove">
+                        </form>
+                    </td>
+                </tr>
+            """)
+
+        for i in range(0, len(relationships_proposed)):
+            print('<tr>')
+            print('<td>')
+            print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                  '&WATCHUSERNAME=' + relationships_proposed[i][0] + '&PAGE=WATCH">' +
+                  users[relationships_proposed[i][0]]["first_name"] + ' ' + users[relationships_proposed[i][0]]["second_name"] + '</a></td>')
+            print('<td>added you</td>')
+            print("""
+                        <td>
+                            <form action="/cgi-bin/profile.py">
+                                <input type="submit" class="big_button" value="Confirm">
+                            </form>
+                        </td>
+                    </tr>
+                """)
+
+        for i in range(0, len(relationships_pending)):
+            print('<tr>')
+            print('<td>')
+            print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                  '&WATCHUSERNAME=' + relationships_pending[i][0] + '&PAGE=WATCH">' +
+                  users[relationships_pending[i][0]]["first_name"] + ' ' + users[relationships_pending[i][0]][
+                      "second_name"] + '</a></td>')
+            print('<td>is pending</td>')
+            print("""
+                            <td>
+                                <form action="/cgi-bin/profile.py">
+                                    <input type="submit" class="big_button" value="Reject">
+                                </form>
+                            </td>
+                        </tr>
+                    """)
+        print('</table>')
 
     @staticmethod
-    def PrintUserList(username, password, foundUsers):
+    def PrintUserSearchResults(username, password, foundUsers):
         print('<table class="table_colored">')
         for i in range(0, len(foundUsers)):
             print('''
                 <tr>
                     <td>
                         <a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                            '&WATCHUSERNAME=' + foundUsers[i]["username"] + '&PAGE=WATCH">' + foundUsers[i]["first_name"] + ' ' + foundUsers[i]["second_name"] + '</a>')
+                            '&WATCHUSERNAME=' + foundUsers[i]["username"] + '&PAGE=WATCH">' +
+                            foundUsers[i]["first_name"] + ' ' + foundUsers[i]["second_name"] + '</a></td>')
             if foundUsers[i]["relation"] == "-":
                 print("""
                     <td></td>
@@ -327,7 +421,7 @@ class Output:
     def SignIn():
         Output.PrintHead()
         print('<body>')
-        Output.PrintHeader("sign_up.py", "Sign up", None, None, None, None)
+        Output.PrintHeader("sign_up.py", "Sign up", None, None)
         print('<div class="content">')
 
 
@@ -367,13 +461,12 @@ class Output:
         if status == "not_exists":
             print("User does not exist")
         elif status == "mypage":
-            Output.PrintProfile(user, posts, users)
+            Output.PrintProfile(username, password, user, posts, users)
         elif status == "myfriends":
             Output.PrintUserSearchForm(username, password)
-            Output.PrintRelationships(relationships)
-            print('My friends')
+            Output.PrintRelationships(username, password, relationships, users)
         elif status == "search":
-            Output.PrintUserList(username, password, foundUsers)
+            Output.PrintUserSearchResults(username, password, foundUsers)
         elif status == "watch":
             print('Other user')
         elif status == "mygroups":
@@ -387,7 +480,7 @@ class Output:
     def SignUp(status):
         Output.PrintHead()
         print('<body>')
-        Output.PrintHeader("sign_in.py", "Return", None, None, None, None)
+        Output.PrintHeader("sign_in.py", "Return", None, None)
         print('<div class="content">')
 
         if status == "filled_not_all":

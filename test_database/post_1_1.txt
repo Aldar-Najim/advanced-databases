@@ -2,7 +2,7 @@
 	"type":"post",
 	"username":"aldar",
 	"id_group":"-",
-	"date":"2016-09-25",
+	"date":"2016-09-25 12:00",
 	"text":"My second post!",
 	"comments":
 	{

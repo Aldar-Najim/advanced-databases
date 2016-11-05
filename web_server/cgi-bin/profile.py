@@ -1,5 +1,7 @@
 import cgi
 import hashlib
+import datetime
+import json
 
 from output import Output
 from requests import Requests
@@ -112,6 +114,28 @@ class PageProfile:
         return users
 
     @staticmethod
+    def GetUsersByRelations(relationships):
+        result = {}
+
+        for i in range(0, len(relationships)):
+            result[relationships[i][0]] = Requests.FindUserByUsername(relationships[i][0])[0]
+
+        return result
+
+    @staticmethod
+    def AddPostProfile(username, content):
+        document = {}
+        document["type"] = "post"
+        document["username"] = username
+        document["id_group"] = "-"
+        now = datetime.datetime.now()
+        document["date"] = now.strftime("%Y-%m-%d %H:%M")
+        document["text"] = content
+        document["comments"] = {}
+        jsonDoc = json.dumps(document, separators=(',',':'))
+        Requests.UploadDocument(jsonDoc)
+
+    @staticmethod
     def GetUsersByPostList(posts):
         result = {}
 
@@ -123,6 +147,12 @@ class PageProfile:
                 result[comment["username"]] = Requests.FindUserByUsername(comment["username"])[0]
 
         return result
+
+    @staticmethod
+    def GetPostProfileArguments():
+        form = cgi.FieldStorage()
+        content = form.getfirst("POST", None)
+        return (content)
 
     @staticmethod
     def Execute():
@@ -148,7 +178,11 @@ class PageProfile:
                 Output.Profile("mypage", username, password, user, posts, users, None, None)
             elif page == "MYFRIENDS":
                 relationships = Requests.FindRelationshipsByUsername(username)
-                Output.Profile("myfriends", username, password, user, None, None, relationships, None)
+                confirmed = PageProfile.GetUsersByRelations(relationships[0])
+                proposed = PageProfile.GetUsersByRelations(relationships[1])
+                pending = PageProfile.GetUsersByRelations(relationships[2])
+                users = {**confirmed, **proposed, **pending}
+                Output.Profile("myfriends", username, password, user, None, users, relationships, None)
             elif page == "SEARCH":
                 relationships = Requests.FindRelationshipsByUsername(username)
                 searchData = PageProfile.GetSearchArguments()
@@ -162,6 +196,12 @@ class PageProfile:
                 Output.Profile("watch", username, password, user, posts, None, None, None)
             elif page == "MYGROUPS":
                 Output.Profile("mygroups", username, password, user, None, None, None, None)
+            elif page == "POSTPROFILE":
+                content = PageProfile.GetPostProfileArguments()
+                PageProfile.AddPostProfile(username, content)
+                posts = Requests.FindPostsByUsername(user["username"])
+                users = PageProfile.GetUsersByPostList(posts)
+                Output.Profile("mypage", username, password, user, posts, users, None, None)
 
         else:
             Output.Profile("password_incorrect", username, password, user, posts, None, None, None)
