@@ -4,13 +4,13 @@
       "map": "function (doc) {\n  if (doc.type==\"post\")\n    emit([doc.username, doc.date],doc)\n}"
     },
     "relationship_confirmed_by_username": {
-      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"yes\"))\n    {\n      emit(doc.username1, [doc.username2, doc._id])\n      emit(doc.username2, [doc.username1, doc._id])\n    }\n  }\n}"
+      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"yes\"))\n    {\n      emit([doc.username1, doc.username2])\n      emit([doc.username2, doc.username1])\n    }\n  }\n}"
     },
     "relationship_proposed_by_username": {
-      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit(doc.username2, [doc.username1, doc._id])\n      \n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit(doc.username1, [doc.username2, doc._id])\n  }\n}"
+      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit([doc.username2, doc.username1])\n      \n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit([doc.username1, doc.username2])\n  }\n}"
     },
     "relationship_pending_by_username": {
-      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit(doc.username2, [doc.username1, doc._id])\n      \n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit(doc.username1, [doc.username2, doc._id])\n  }\n}"
+      "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"no\") && (doc.confirmed2 == \"yes\"))\n      emit([doc.username2, doc.username1])\n      \n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"no\"))\n      emit([doc.username1, doc.username2])\n  }\n}"
     },
     "user_by_username": {
       "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit(doc.username, doc)\n}"
