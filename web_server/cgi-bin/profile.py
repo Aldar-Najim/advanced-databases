@@ -49,12 +49,14 @@ class PageProfile:
             self.watchUsername = form.getfirst("WATCHUSERNAME", None)
         elif self.page == "ADDCOMMENTPROFILE":
             self.comment = form.getfirst("COMMENT", None)
+            self.watchUsername = form.getfirst("WATCHUSERNAME", None)
             self.postId = form.getfirst("POSTID", None)
         elif self.page == "ADDPOSTPROFILE":
             self.content = form.getfirst("POST", None)
         elif self.page == "DELETEPOSTPROFILE":
             self.postId = form.getfirst("POSTID", None)
         elif self.page == "DELETECOMMENTPROFILE":
+            self.watchUsername = form.getfirst("WATCHUSERNAME", None)
             self.postId = form.getfirst("POSTID", None)
             self.commentId = form.getfirst("COMMENTID", None)
 
@@ -198,26 +200,39 @@ class PageProfile:
                 if (len(watchUser) > 0):
                     watchUser = watchUser[0]
                     posts = Requests.FindPostsByUsername(watchUser["username"])
-                    Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, watchUser)
+                    users = PageProfile.GetUsersByPostList(posts)
+                    Output.Profile("watch", self.username, self.password, watchUser, posts, users, None, None, None)
                 else:
                     Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
             elif self.page == "MYGROUPS":
                 Output.Profile("mygroups", self.username, self.password, self.user, None, None, None, None, None)
             elif self.page == "ADDCOMMENTPROFILE":
-                self.AddCommentPost()
-                posts = Requests.FindPostsByUsername(self.user["username"])
-                users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+                watchUser = Requests.FindUserByUsername(self.watchUsername)
+                if (len(watchUser) > 0):
+                    watchUser = watchUser[0]
+                    self.AddCommentPost()
+                    posts = Requests.FindPostsByUsername(self.watchUsername)
+                    users = PageProfile.GetUsersByPostList(posts)
+                    if self.watchUsername == self.username:
+                        Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+                    else:
+                        Output.Profile("watch", self.username, self.password, watchUser, posts, users, None, None, None)
             elif self.page == "ADDPOSTPROFILE":
                 self.AddPostProfile(self.content)
                 posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
                 Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
             elif self.page == "DELETECOMMENTPROFILE":
-                self.DeleteCommentProfile()
-                posts = Requests.FindPostsByUsername(self.user["username"])
-                users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+                watchUser = Requests.FindUserByUsername(self.watchUsername)
+                if (len(watchUser) > 0):
+                    watchUser = watchUser[0]
+                    self.DeleteCommentProfile()
+                    posts = Requests.FindPostsByUsername(self.watchUsername)
+                    users = PageProfile.GetUsersByPostList(posts)
+                    if self.watchUsername == self.username:
+                        Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+                    else:
+                        Output.Profile("watch", self.username, self.password, watchUser, posts, users, None, None, None)
             elif self.page == "DELETEPOSTPROFILE":
                 self.DeletePostProfile()
                 posts = Requests.FindPostsByUsername(self.user["username"])

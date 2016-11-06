@@ -1,0 +1,16 @@
+{
+	"type":"post",
+	"username":"mary",
+	"id_group":"-",
+	"date":"2016-09-02 12:00",
+	"text":"Check out my new shoes!",
+	"comments":
+	{
+		"c30e533236a885f29a115551eb016043":
+		{
+			"username":"john",
+			"text":"Adorable",
+			"date":"2016-09-02 12:10"
+		}
+	}
+}

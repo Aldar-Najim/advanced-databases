@@ -17,6 +17,7 @@ curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd00ce84 -d @us
 
 curl -X PUT http://127.0.0.1:5984/social/a8af1fde90e8f71681da7ce3730121b0 -d @post_1_1.txt
 curl -X PUT http://127.0.0.1:5984/social/a8af1fde90e8f71681da7ce373015a56 -d @post_1_2.txt
+curl -X PUT http://127.0.0.1:5984/social/c30e533236a885f29a115551eb0164cf -d @post_4_1.txt
 
 :: Relationships -------------------------------------------------------------------------------------------------------
 

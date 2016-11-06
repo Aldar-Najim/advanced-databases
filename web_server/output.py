@@ -140,28 +140,29 @@ class Output:
                     <td>""" + user["date_of_birth"] + """</td>
                 </tr>
             </table><br><br>""")
-        print('''
-            <tr><h2>Add post</h2></tr>
-            <table class="table_colored">
-                <form action="/cgi-bin/profile.py">
-                    <input type=hidden name=USERNAME value="''' + username + '''">
-                    <input type=hidden name=PASSWORD value="''' + password + '''">
-                    <tr>
-                        <td>
-                            <input type="text" name="POST">
-                        </td>
-                        <td>
-                            <input type="submit" class="big_button" value="Add">
-                        </td>
-                    </tr>
-                    <input type=hidden name=PAGE value="ADDPOSTPROFILE">
-                </form>
-            </table>
-        ''')
-        Output.PrintPostSequence(username, password, posts, users)
+        if username == user["username"]:
+            print('''
+                <tr><h2>Add post</h2></tr>
+                <table class="table_colored">
+                    <form action="/cgi-bin/profile.py">
+                        <input type=hidden name=USERNAME value="''' + username + '''">
+                        <input type=hidden name=PASSWORD value="''' + password + '''">
+                        <tr>
+                            <td>
+                                <input type="text" name="POST">
+                            </td>
+                            <td>
+                                <input type="submit" class="big_button" value="Add">
+                            </td>
+                        </tr>
+                        <input type=hidden name=PAGE value="ADDPOSTPROFILE">
+                    </form>
+                </table>
+            ''')
+        Output.PrintPostSequence(username, password, user, posts, users)
 
     @staticmethod
-    def PrintPostSequence(username, password, posts, users):
+    def PrintPostSequence(username, password, user, posts, users):
         for post in reversed(posts):
             print("""
                 <table class="table_colored">
@@ -199,7 +200,7 @@ class Output:
                             <td>""" + comment["date"])
 
                     Output.PrintImage("trash.png", Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                                  '&POSTID=' + post["_id"] + '&COMMENTID=' + comment_id + '&PAGE=DELETECOMMENTPROFILE')
+                                  '&POSTID=' + post["_id"] + '&COMMENTID=' + comment_id + '&WATCHUSERNAME=' + user["username"] +'&PAGE=DELETECOMMENTPROFILE')
 
                     print('</td></tr>')
 
@@ -216,6 +217,7 @@ class Output:
                         <input type="submit" class="big_button" value="Add comment">
                     </td>
                     <input type=hidden name=POSTID value="''' + post["_id"] + '''">
+                    <input type=hidden name=WATCHUSERNAME value="''' + user["username"] + '''">
                     <input type=hidden name=PAGE value="ADDCOMMENTPROFILE">
                 </form>
             </tr>
@@ -475,8 +477,8 @@ class Output:
         elif status == "search":
             Output.PrintUserSearchResults(username, password, foundUsers)
         elif status == "watch":
-            if watchUsername:
-                print(watchUsername["username"])
+            if user:
+                Output.PrintProfile(username, password, user, posts, users)
             else:
                 print("Not found")
         elif status == "mygroups":
