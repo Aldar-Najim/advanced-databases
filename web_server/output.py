@@ -154,7 +154,7 @@ class Output:
                             <input type="submit" class="big_button" value="Add">
                         </td>
                     </tr>
-                    <input type=hidden name=PAGE value="POSTPROFILE">
+                    <input type=hidden name=PAGE value="ADDPOSTPROFILE">
                 </form>
             </table>
         ''')
@@ -173,7 +173,7 @@ class Output:
 
             if username == post["username"]:
                 Output.PrintImage('trash.png', Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                                  '&POSTID=' + post["_id"] + '&PAGE=DELETEPOST')
+                                  '&POSTID=' + post["_id"] + '&PAGE=DELETEPOSTPROFILE')
 
             print('</td></tr>')
 
@@ -216,7 +216,7 @@ class Output:
                         <input type="submit" class="big_button" value="Add comment">
                     </td>
                     <input type=hidden name=POSTID value="''' + post["_id"] + '''">
-                    <input type=hidden name=PAGE value="COMMENTPROFILE">
+                    <input type=hidden name=PAGE value="ADDCOMMENTPROFILE">
                 </form>
             </tr>
             ''')
@@ -274,17 +274,17 @@ class Output:
                         </td>
                         <td>
                             <h3>First name</h3>
-                            <input type="text" name="FIRST_NAME"><br><br>
+                            <input type="text" name="FIRSTNAME"><br><br>
                         </td>
                     </tr>
                     <tr>
                         <td>
                             <h3>Second name</h3>
-                            <input type="text" name="SECOND_NAME"><br><br>
+                            <input type="text" name="SECONDNAME"><br><br>
                         </td>
                         <td>
                             <h3>Date of birth</h3>
-                            <input type="date" name="DATE_OF_BIRTH"><br><br>
+                            <input type="date" name="DATEOFBIRTH"><br><br>
                         </td>
                     </tr>
                     <tr>
@@ -445,7 +445,7 @@ class Output:
         print('</div></body></html>')
 
     @staticmethod
-    def Profile(status, username, password, user, posts, users, relationships, foundUsers):
+    def Profile(status, username, password, user, posts, users, relationships, foundUsers, watchUsername):
         Output.PrintHead()
         print('<body>')
 
@@ -458,7 +458,7 @@ class Output:
             Output.PrintHeader(buttonFileTo, buttonName, None, tabUrls)
         elif status == "mypage":
             Output.PrintHeader(buttonFileTo, buttonName, 1, tabUrls)
-        elif status == "myfriends" or status == "search":
+        elif status == "myfriends" or status == "search" or status == "watch":
             Output.PrintHeader(buttonFileTo, buttonName, 2, tabUrls)
         elif status == "mygroups":
             Output.PrintHeader(buttonFileTo, buttonName, 3, tabUrls)
@@ -475,7 +475,10 @@ class Output:
         elif status == "search":
             Output.PrintUserSearchResults(username, password, foundUsers)
         elif status == "watch":
-            print('Other user')
+            if watchUsername:
+                print(watchUsername["username"])
+            else:
+                print("Not found")
         elif status == "mygroups":
             print('My groups')
         else:

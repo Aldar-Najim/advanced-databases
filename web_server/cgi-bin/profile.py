@@ -9,82 +9,101 @@ from requests import Requests
 class PageProfile:
 
     @staticmethod
-    def CheckHash(username, password, user):
+    def GetUsersByRelations(relationships):
+        result = {}
+
+        for i in range(0, len(relationships)):
+            result[relationships[i][0]] = Requests.FindUserByUsername(relationships[i][0])[0]
+
+        return result
+
+    @staticmethod
+    def GetCurrentDate():
+        now = datetime.datetime.now()
+        return now.strftime("%Y-%m-%d %H:%M")
+
+    @staticmethod
+    def GetUsersByPostList(posts):
+        result = {}
+
+        if len(posts) > 0:
+            result[posts[0]["username"]] = Requests.FindUserByUsername(posts[0]["username"])[0]
+
+        for i in range(0, len(posts)):
+            for comment_id, comment in posts[i]["comments"].items():
+                result[comment["username"]] = Requests.FindUserByUsername(comment["username"])[0]
+
+        return result
+
+    def __init__(self):
+        form = cgi.FieldStorage()
+        self.username = form.getfirst("USERNAME", "-")
+        self.password = form.getfirst("PASSWORD", "-")
+        self.page = form.getfirst("PAGE", "MYPAGE")
+        if self.page == "SEARCH":
+            self.usernameSearched = form.getfirst("SEARCHED", None)
+            self.firstName = form.getfirst("FIRSTNAME", None)
+            self.secondName = form.getfirst("SECONDNAME", None)
+            self.dateOfBirth = form.getfirst("DATEOFBIRTH", None)
+        elif self.page == "WATCH":
+            self.watchUsername = form.getfirst("WATCHUSERNAME", None)
+        elif self.page == "ADDCOMMENTPROFILE":
+            self.comment = form.getfirst("COMMENT", None)
+            self.postId = form.getfirst("POSTID", None)
+        elif self.page == "ADDPOSTPROFILE":
+            self.content = form.getfirst("POST", None)
+        elif self.page == "DELETEPOSTPROFILE":
+            self.postId = form.getfirst("POSTID", None)
+        elif self.page == "DELETECOMMENTPROFILE":
+            self.postId = form.getfirst("POSTID", None)
+            self.commentId = form.getfirst("COMMENTID", None)
+
+    def CheckHash(self):
         """
-            Takes username, password and found user data
             Returns:
-            Flag: the actual hash matches the specified hash
+            Flag - if the actual hash matches the specified hash
         """
 
-        hash_actual = user["password_hash"]
-        hash_specified = hashlib.md5(password.encode('utf-8')).hexdigest()
+        hash_actual = self.user["password_hash"]
+        hash_specified = hashlib.md5(self.password.encode('utf-8')).hexdigest()
         return hash_actual == hash_specified
 
-    @staticmethod
-    def GetArguments():
-        form = cgi.FieldStorage()
-        username = form.getfirst("USERNAME", "-")
-        password = form.getfirst("PASSWORD", "-")
-        page = form.getfirst("PAGE", "MYPAGE")
-        return (username, password, page)
-
-    @staticmethod
-    def GetSearchArguments():
-        form = cgi.FieldStorage()
-        searched = form.getfirst("SEARCHED", None)
-        first_name = form.getfirst("FIRST_NAME", None)
-        second_name = form.getfirst("SECOND_NAME", None)
-        date_of_birth = form.getfirst("DATE_OF_BIRTH", None)
-        return (searched, first_name, second_name, date_of_birth)
-
-    @staticmethod
-    def GetWatchArgument():
-        form = cgi.FieldStorage()
-        return form.getfirst("WATCHUSERNAME", None)
-
-    @staticmethod
-    def SearchUsers(searchData):
-        username = searchData[0]
-        firstName = searchData[1]
-        secondName = searchData[2]
-        dateOfBirth = searchData[3]
-
-        if username:
-            users = Requests.FindUserByUsername(username)
+    def SearchUsers(self):
+        if self.usernameSearched:
+            users = Requests.FindUserByUsername(self.usernameSearched)
             if len(users) > 0:
-                if firstName and (users[0]["first_name"] != firstName):
+                if self.firstName and (users[0]["first_name"] != self.firstName):
                     return None
-                if secondName and (users[0]["second_name"] != secondName):
+                if self.secondName and (users[0]["second_name"] != self.secondName):
                     return None
-                if dateOfBirth and (users[0]["date_of_birth"] != dateOfBirth):
+                if self.dateOfBirth and (users[0]["date_of_birth"] != self.dateOfBirth):
                     return None
                 return users
             else:
                 return None
         else:
-            if firstName and secondName and dateOfBirth:
-                return Requests.FindUsersByFnameSnameBday(firstName, secondName, dateOfBirth)
-            elif firstName and secondName and not dateOfBirth:
-                return Requests.FindUsersByFnameSnameBday(firstName, secondName, dateOfBirth)
-            elif firstName and not secondName and not dateOfBirth:
-                return Requests.FindUsersByFnameSnameBday(firstName, secondName, dateOfBirth)
-            elif not firstName and secondName and dateOfBirth:
-                return Requests.FindUsersBySnameBday(secondName, dateOfBirth)
-            elif not firstName and secondName and not dateOfBirth:
-                return Requests.FindUsersBySnameBday(secondName, dateOfBirth)
-            elif firstName and not secondName and dateOfBirth:
-                return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
-            elif not firstName and not secondName and not dateOfBirth:
+            if self.firstName and self.secondName and self.dateOfBirth:
+                return Requests.FindUsersByFnameSnameBday(self.firstName, self.secondName, self.dateOfBirth)
+            elif self.firstName and self.secondName and not self.dateOfBirth:
+                return Requests.FindUsersByFnameSnameBday(self.firstName, self.secondName, self.dateOfBirth)
+            elif self.firstName and not self.secondName and not self.dateOfBirth:
+                return Requests.FindUsersByFnameSnameBday(self.firstName, self.secondName, self.dateOfBirth)
+            elif not self.firstName and self.secondName and self.dateOfBirth:
+                return Requests.FindUsersBySnameBday(self.secondName, self.dateOfBirth)
+            elif not self.firstName and self.secondName and not self.dateOfBirth:
+                return Requests.FindUsersBySnameBday(self.secondName, self.dateOfBirth)
+            elif self.firstName and not self.secondName and self.dateOfBirth:
+                return Requests.FindUsersByBdayFname(self.dateOfBirth, self.firstName)
+            elif not self.firstName and not self.secondName and not self.dateOfBirth:
                 return Requests.FindAllUsers()
             else:
-                return Requests.FindUsersByBdayFname(dateOfBirth, firstName)
+                return Requests.FindUsersByBdayFname(self.dateOfBirth, self.firstName)
 
-    @staticmethod
-    def TagUsersByRelations(users, relationships, myUsername):
+    def TagUsersByRelations(self, users, relationships):
         for i in range(0, len(users)):
             found = False
 
-            if myUsername == users[i]["username"]:
+            if self.username == users[i]["username"]:
                 users[i]["relation"] = "me"
                 found = True
 
@@ -113,162 +132,100 @@ class PageProfile:
 
         return users
 
-    @staticmethod
-    def GetUsersByRelations(relationships):
-        result = {}
-
-        for i in range(0, len(relationships)):
-            result[relationships[i][0]] = Requests.FindUserByUsername(relationships[i][0])[0]
-
-        return result
-
-    @staticmethod
-    def GetCurrentDate():
-        now = datetime.datetime.now()
-        return now.strftime("%Y-%m-%d %H:%M")
-
-    @staticmethod
-    def AddPostProfile(username, content):
+    def AddPostProfile(self, content):
         document = {}
         document["type"] = "post"
-        document["username"] = username
+        document["username"] = self.username
         document["id_group"] = "-"
         document["date"] = PageProfile.GetCurrentDate()
         document["text"] = content
         document["comments"] = {}
-        jsonDoc = json.dumps(document, separators=(',',':'))
+        jsonDoc = json.dumps(document, separators=(',', ':'))
         Requests.UploadDocument(jsonDoc)
 
-    @staticmethod
-    def GetUsersByPostList(posts):
-        result = {}
-
-        if len(posts) > 0:
-            result[posts[0]["username"]] = Requests.FindUserByUsername(posts[0]["username"])[0]
-
-        for i in range(0, len(posts)):
-            for comment_id, comment in posts[i]["comments"].items():
-                result[comment["username"]] = Requests.FindUserByUsername(comment["username"])[0]
-
-        return result
-
-    @staticmethod
-    def GetCommentProfileArgument():
-        form = cgi.FieldStorage()
-        comment = form.getfirst("COMMENT", None)
-        postId = form.getfirst("POSTID", None)
-        return (comment, postId)
-
-    @staticmethod
-    def GetPostProfileArguments():
-        form = cgi.FieldStorage()
-        content = form.getfirst("POST", None)
-        return (content)
-
-    @staticmethod
-    def AddCommentToPost(username, password, comment, postId):
-        postContent = Requests.DownloadDocument(postId)
-        newComment = {"username":username,"text":comment,"date":PageProfile.GetCurrentDate()}
+    def AddCommentPost(self):
+        postContent = Requests.DownloadDocument(self.postId)
+        newComment = {"username":self.username,"text":self.comment,"date":PageProfile.GetCurrentDate()}
         uuid = Requests.GenerateUUID()
         postContent["comments"][uuid] = newComment
         jsonDoc = json.dumps(postContent, separators=(',', ':'))
         Requests.UploadDocument(jsonDoc)
 
-    @staticmethod
-    def GetDeletePostArguments():
-        form = cgi.FieldStorage()
-        return form.getfirst("POSTID", None)
+    def DeletePostProfile(self):
+        post = Requests.DownloadDocument(self.postId)
+        if (self.username == post["username"]):
+            Requests.DeleteDocument(self.postId)
 
-    @staticmethod
-    def GetDeleteCommentProfileArguments():
-        form = cgi.FieldStorage()
-        return (form.getfirst("POSTID", None), form.getfirst("COMMENTID", None))
-
-    @staticmethod
-    def DeletePost(username, postId):
-        post = Requests.DownloadDocument(postId)
-        if (username == post["username"]):
-            Requests.DeleteDocument(postId)
-
-    @staticmethod
-    def DeleteCommentProfile(username, postId, commentId):
-        post = Requests.DownloadDocument(postId)
-        if (post["comments"][commentId]["username"] == username):
-            del post["comments"][commentId]
+    def DeleteCommentProfile(self):
+        post = Requests.DownloadDocument(self.postId)
+        if (post["comments"][self.commentId]["username"] == self.username):
+            del post["comments"][self.commentId]
             jsonPost = json.dumps(post, separators=(',', ':'))
             Requests.UploadDocument(jsonPost)
 
-    @staticmethod
-    def Execute():
-        (username, password, page) = PageProfile.GetArguments()
-        user = Requests.FindUserByUsername(username)
-
-        if len(user) > 0:
+    def Execute(self):
+        self.user = Requests.FindUserByUsername(self.username)
+        if len(self.user) > 0:
             exists = True
-            user = user[0]
-            accepted = PageProfile.CheckHash(username, password, user)
+            self.user = self.user[0]
+            accepted = self.CheckHash()
         else:
             exists = False
 
         posts = None
 
         if not exists:
-            Output.Profile("not_exists", username, password, user, None, posts, None, None)
+            Output.Profile("not_exists", self.username, self.password, self.user, None, posts, None, None, None)
         elif accepted:
-
-            if page == "MYPAGE":
-                posts = Requests.FindPostsByUsername(user["username"])
+            if self.page == "MYPAGE":
+                posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", username, password, user, posts, users, None, None)
-            elif page == "MYFRIENDS":
-                relationships = Requests.FindRelationshipsByUsername(username)
+                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+            elif self.page == "MYFRIENDS":
+                relationships = Requests.FindRelationshipsByUsername(self.username)
                 confirmed = PageProfile.GetUsersByRelations(relationships[0])
                 proposed = PageProfile.GetUsersByRelations(relationships[1])
                 pending = PageProfile.GetUsersByRelations(relationships[2])
                 users = {**confirmed, **proposed, **pending}
-                Output.Profile("myfriends", username, password, user, None, users, relationships, None)
-            elif page == "SEARCH":
-                relationships = Requests.FindRelationshipsByUsername(username)
-                searchData = PageProfile.GetSearchArguments()
-                users = PageProfile.SearchUsers(searchData)
-                PageProfile.TagUsersByRelations(users, relationships, username)
-                Output.Profile("search", username, password, user, None, None, relationships, users)
-            elif page == "WATCH":
-                watchUsername = PageProfile.GetWatchArgument()
-                user = Requests.FindUserByUsername(watchUsername)
-                posts = Requests.FindPostsByUsername(user["username"])
-                Output.Profile("watch", username, password, user, posts, None, None, None)
-            elif page == "MYGROUPS":
-                Output.Profile("mygroups", username, password, user, None, None, None, None)
-            elif page == "COMMENTPROFILE":
-                arguments = PageProfile.GetCommentProfileArgument()
-                PageProfile.AddCommentToPost(username, password, arguments[0], arguments[1])
-                posts = Requests.FindPostsByUsername(user["username"])
+                Output.Profile("myfriends", self.username, self.password, self.user, None, users, relationships, None, None)
+            elif self.page == "SEARCH":
+                relationships = Requests.FindRelationshipsByUsername(self.username)
+                users = self.SearchUsers()
+                self.TagUsersByRelations(users, relationships)
+                Output.Profile("search", self.username, self.password, self.user, None, None, relationships, users, None)
+            elif self.page == "WATCH":
+                watchUser = Requests.FindUserByUsername(self.watchUsername)
+                if (len(watchUser) > 0):
+                    watchUser = watchUser[0]
+                    posts = Requests.FindPostsByUsername(watchUser["username"])
+                    Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, watchUser)
+                else:
+                    Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
+            elif self.page == "MYGROUPS":
+                Output.Profile("mygroups", self.username, self.password, self.user, None, None, None, None, None)
+            elif self.page == "ADDCOMMENTPROFILE":
+                self.AddCommentPost()
+                posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", username, password, user, posts, users, None, None)
-            elif page == "POSTPROFILE":
-                content = PageProfile.GetPostProfileArguments()
-                PageProfile.AddPostProfile(username, content)
-                posts = Requests.FindPostsByUsername(user["username"])
+                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+            elif self.page == "ADDPOSTPROFILE":
+                self.AddPostProfile(self.content)
+                posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", username, password, user, posts, users, None, None)
-            elif page == "DELETECOMMENTPROFILE":
-                arguments = PageProfile.GetDeleteCommentProfileArguments()
-                PageProfile.DeleteCommentProfile(username, arguments[0], arguments[1])
-                posts = Requests.FindPostsByUsername(user["username"])
+                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+            elif self.page == "DELETECOMMENTPROFILE":
+                self.DeleteCommentProfile()
+                posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", username, password, user, posts, users, None, None)
-            elif page == "DELETEPOST":
-                postId = PageProfile.GetDeletePostArguments()
-                PageProfile.DeletePost(username, postId)
-                posts = Requests.FindPostsByUsername(user["username"])
+                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+            elif self.page == "DELETEPOSTPROFILE":
+                self.DeletePostProfile()
+                posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
-                Output.Profile("mypage", username, password, user, posts, users, None, None)
-
-
+                Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
         else:
-            Output.Profile("password_incorrect", username, password, user, posts, None, None, None)
+            Output.Profile("password_incorrect", self.username, self.password, self.user, posts, None, None, None, None)
 
 
-
-PageProfile.Execute()
+page = PageProfile()
+page.Execute()
