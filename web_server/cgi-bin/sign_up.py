@@ -4,48 +4,40 @@ import hashlib
 from output import Output
 from requests import Requests
 
-
 class PageSignUp:
 
-    @staticmethod
-    def CreateUserJson(username, first_name, second_name, password, date_of_birth):
-        return '{"type":"user", "username":"' + username + \
-                           '", "first_name":"' + first_name + \
-                           '", "second_name":"' + second_name + \
-                           '", "password_hash":"' + hashlib.md5(password.encode('utf-8')).hexdigest() + \
-                           '", "date_of_birth":"' + date_of_birth + \
+    def CreateUserJson(self):
+        return '{"type":"user", "username":"' + self.username + \
+                           '", "first_name":"' + self.firstName + \
+                           '", "second_name":"' + self.secondName + \
+                           '", "password_hash":"' + hashlib.md5(self.password.encode('utf-8')).hexdigest() + \
+                           '", "date_of_birth":"' + self.dateOfBirth + \
                            '", "description":""}'
 
-    @staticmethod
-    def GetArguments():
+    def __init__(self):
         form = cgi.FieldStorage()
-        username = form.getfirst("USERNAME", None)
-        password = form.getfirst("PASSWORD", None)
-        first_name = form.getfirst("FIRST_NAME", None)
-        second_name = form.getfirst("SECOND_NAME", None)
-        date_of_birth = form.getfirst("DATE_OF_BIRTH", None)
-        return (username, password, first_name, second_name, date_of_birth)
+        self.username = form.getfirst("USERNAME", None)
+        self.password = form.getfirst("PASSWORD", None)
+        self.firstName = form.getfirst("FIRST_NAME", None)
+        self.secondName = form.getfirst("SECOND_NAME", None)
+        self.dateOfBirth = form.getfirst("DATE_OF_BIRTH", None)
 
-    @staticmethod
-    def Execute():
-        (username, password, first_name, second_name, date_of_birth) = PageSignUp.GetArguments()
-
-        if (not username) and (not password) and (not first_name) and (not second_name) and (not date_of_birth):
+    def Execute(self):
+        if (not self.username) and (not self.password) and (not self.firstName) and (not self.secondName) and (not self.dateOfBirth):
             Output.SignUp("not_filled")
         else:
-            if username and password and first_name and second_name and date_of_birth:
-                jsonHashes = Requests.FindUserByUsername(username)
+            if self.username and self.password and self.firstName and self.secondName and self.dateOfBirth:
+                users = Requests.FindUserByUsername(self.username)
 
-                if len(jsonHashes["rows"]) > 0:
+                if len(users) > 0:
                     Output.SignUp("filled_already_exists")
                 else:
-                    jsonContent = PageSignUp.CreateUserJson(username, first_name, second_name, password, date_of_birth)
+                    jsonContent = self.CreateUserJson()
                     Requests.UploadDocument(jsonContent)
                     Output.SignUp("filled_created")
             else:
                 Output.SignUp("filled_not_all")
 
 
-
-
-PageSignUp.Execute()
+page = PageSignUp()
+page.Execute()

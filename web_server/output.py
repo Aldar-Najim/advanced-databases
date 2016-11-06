@@ -491,13 +491,15 @@ class Output:
         print('<div class="content">')
 
         if status == "filled_not_all":
-            print("""<font color="red">All fields must be filled!</font>""")
+            print('<font color="red">All fields must be filled!</font>')
             Output.PrintSignUpForm()
         elif status == "not_filled":
             Output.PrintSignUpForm()
         elif status == "filled_already_exists":
-            print("""User with such username is already existing""")
+            print('<font color="red">User with such username is already existing</font>')
+            Output.PrintSignUpForm()
         else:
-            print("""User account created""")
+            print('<font color="red">User account created</font>')
+            Output.PrintSignUpForm()
 
         print('</div></body></html>')
