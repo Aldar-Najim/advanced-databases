@@ -1,14 +1,10 @@
 from output import Output
 
-
-
 class PageSignIn:
 
-    @staticmethod
-    def Execute():
+    def Execute(self):
         Output.SignIn()
 
 
-
-
-PageSignIn.Execute()
+page = PageSignIn()
+page.Execute()
