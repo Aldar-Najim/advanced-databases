@@ -29,8 +29,6 @@ class Requests:
     def DeleteDocument(documentId):
         content = Requests.DownloadDocument(documentId)
         newContent = '{"_id":"' + content["_id"] + '", "_rev":"' + content["_rev"] + '","_deleted":true}'
-        #newContent = '{"_id":"' + content["_id"] + '", "_rev":"' + content["_rev"] + '"}'
-        #newJson = json.dumps(newContent, separators=(',', ':'))
         HttpApi.PostDB('', newContent)
 
     @staticmethod

@@ -141,6 +141,7 @@ class Output:
                 </tr>
             </table><br><br>""")
         print('''
+            <tr><h2>Add post</h2></tr>
             <table class="table_colored">
                 <form action="/cgi-bin/profile.py">
                     <input type=hidden name=USERNAME value="''' + username + '''">
@@ -150,7 +151,7 @@ class Output:
                             <input type="text" name="POST">
                         </td>
                         <td>
-                            <input type="submit" class="big_button" value="Add post">
+                            <input type="submit" class="big_button" value="Add">
                         </td>
                     </tr>
                     <input type=hidden name=PAGE value="POSTPROFILE">
@@ -166,9 +167,9 @@ class Output:
                 <table class="table_colored">
                     <tr><h2>Post</h2></tr>
                     <tr>
-                        <td>""" + post["date"] + """</td>
+                        <td><h2>""" + users[post["username"]]["first_name"] + " " + users[post["username"]]["second_name"] + """</h2></td>
                         <td><h2>""" + post["text"] + """</h2></td>
-                        <td>""")
+                        <td>""" + post["date"])
 
             if username == post["username"]:
                 Output.PrintImage('trash.png', Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
@@ -197,7 +198,8 @@ class Output:
                             <td>""" + comment["text"] + """</td>
                             <td>""" + comment["date"])
 
-                    Output.PrintImage("trash.png", "")
+                    Output.PrintImage("trash.png", Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                                  '&POSTID=' + post["_id"] + '&COMMENTID=' + comment_id + '&PAGE=DELETECOMMENTPROFILE')
 
                     print('</td></tr>')
 

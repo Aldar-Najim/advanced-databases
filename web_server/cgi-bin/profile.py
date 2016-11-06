@@ -180,10 +180,23 @@ class PageProfile:
         return form.getfirst("POSTID", None)
 
     @staticmethod
+    def GetDeleteCommentProfileArguments():
+        form = cgi.FieldStorage()
+        return (form.getfirst("POSTID", None), form.getfirst("COMMENTID", None))
+
+    @staticmethod
     def DeletePost(username, postId):
         post = Requests.DownloadDocument(postId)
         if (username == post["username"]):
             Requests.DeleteDocument(postId)
+
+    @staticmethod
+    def DeleteCommentProfile(username, postId, commentId):
+        post = Requests.DownloadDocument(postId)
+        if (post["comments"][commentId]["username"] == username):
+            del post["comments"][commentId]
+            jsonPost = json.dumps(post, separators=(',', ':'))
+            Requests.UploadDocument(jsonPost)
 
     @staticmethod
     def Execute():
@@ -236,6 +249,12 @@ class PageProfile:
             elif page == "POSTPROFILE":
                 content = PageProfile.GetPostProfileArguments()
                 PageProfile.AddPostProfile(username, content)
+                posts = Requests.FindPostsByUsername(user["username"])
+                users = PageProfile.GetUsersByPostList(posts)
+                Output.Profile("mypage", username, password, user, posts, users, None, None)
+            elif page == "DELETECOMMENTPROFILE":
+                arguments = PageProfile.GetDeleteCommentProfileArguments()
+                PageProfile.DeleteCommentProfile(username, arguments[0], arguments[1])
                 posts = Requests.FindPostsByUsername(user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
                 Output.Profile("mypage", username, password, user, posts, users, None, None)
