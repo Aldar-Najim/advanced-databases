@@ -310,8 +310,8 @@ class Output:
             print('<tr>')
             print('<td>')
             print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                            '&WATCHUSERNAME=' + relationships_confirmed[i][0] + '&PAGE=WATCH">' +
-                            users[relationships_confirmed[i][0]]["first_name"] + ' ' + users[relationships_confirmed[i][0]]["second_name"] + '</a></td>')
+                            '&WATCHUSERNAME=' + relationships_confirmed[i] + '&PAGE=WATCH">' +
+                            users[relationships_confirmed[i]]["first_name"] + ' ' + users[relationships_confirmed[i]]["second_name"] + '</a></td>')
             print('<td>you are friends</td>')
             print("""
                     <td>
@@ -326,8 +326,8 @@ class Output:
             print('<tr>')
             print('<td>')
             print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                  '&WATCHUSERNAME=' + relationships_proposed[i][0] + '&PAGE=WATCH">' +
-                  users[relationships_proposed[i][0]]["first_name"] + ' ' + users[relationships_proposed[i][0]]["second_name"] + '</a></td>')
+                  '&WATCHUSERNAME=' + relationships_proposed[i] + '&PAGE=WATCH">' +
+                  users[relationships_proposed[i]]["first_name"] + ' ' + users[relationships_proposed[i]]["second_name"] + '</a></td>')
             print('<td>added you</td>')
             print("""
                         <td>
@@ -342,8 +342,8 @@ class Output:
             print('<tr>')
             print('<td>')
             print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
-                  '&WATCHUSERNAME=' + relationships_pending[i][0] + '&PAGE=WATCH">' +
-                  users[relationships_pending[i][0]]["first_name"] + ' ' + users[relationships_pending[i][0]][
+                  '&WATCHUSERNAME=' + relationships_pending[i] + '&PAGE=WATCH">' +
+                  users[relationships_pending[i]]["first_name"] + ' ' + users[relationships_pending[i]][
                       "second_name"] + '</a></td>')
             print('<td>is pending</td>')
             print("""
@@ -380,14 +380,18 @@ class Output:
                     </td>
                 ''')
             elif foundUsers[i]["relation"] == "proposed":
-                print("""
+                print('''
                     <td>added you</td>
                     <td>
                         <form action="/cgi-bin/profile.py">
+                            <input type=hidden name=USERNAME value="''' + username + '''">
+                            <input type=hidden name=PASSWORD value="''' + password + '''">
                             <input type="submit" class="big_button" value="Confirm">
+                            <input type=hidden name=OTHERUSERNAME value="''' + foundUsers[i]["username"] + '''">
+                            <input type=hidden name=PAGE value="CONFIRMFRIEND">
                         </form>
                     </td>
-                    """)
+                    ''')
             elif foundUsers[i]["relation"] == "pending":
                 print("""<td>is pending</td>
                         <td>
@@ -463,7 +467,7 @@ class Output:
             Output.PrintHeader(buttonFileTo, buttonName, None, tabUrls)
         elif status == "mypage":
             Output.PrintHeader(buttonFileTo, buttonName, 1, tabUrls)
-        elif status == "myfriends" or status == "search" or status == "watch":
+        elif status == "myfriends" or status == "search" or status == "watch" or status == "addfriend" or status == "confirmfriend":
             Output.PrintHeader(buttonFileTo, buttonName, 2, tabUrls)
         elif status == "mygroups":
             Output.PrintHeader(buttonFileTo, buttonName, 3, tabUrls)
