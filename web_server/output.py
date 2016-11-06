@@ -171,7 +171,8 @@ class Output:
                         <td>""")
 
             if username == post["username"]:
-                Output.PrintImage('trash.png', '')
+                Output.PrintImage('trash.png', Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                                  '&POSTID=' + post["_id"] + '&PAGE=DELETEPOST')
 
             print('</td></tr>')
 

@@ -173,9 +173,17 @@ class PageProfile:
         postContent["comments"][uuid] = newComment
         jsonDoc = json.dumps(postContent, separators=(',', ':'))
         Requests.UploadDocument(jsonDoc)
-        a=1
 
+    @staticmethod
+    def GetDeletePostArguments():
+        form = cgi.FieldStorage()
+        return form.getfirst("POSTID", None)
 
+    @staticmethod
+    def DeletePost(username, postId):
+        post = Requests.DownloadDocument(postId)
+        if (username == post["username"]):
+            Requests.DeleteDocument(postId)
 
     @staticmethod
     def Execute():
@@ -231,6 +239,13 @@ class PageProfile:
                 posts = Requests.FindPostsByUsername(user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
                 Output.Profile("mypage", username, password, user, posts, users, None, None)
+            elif page == "DELETEPOST":
+                postId = PageProfile.GetDeletePostArguments()
+                PageProfile.DeletePost(username, postId)
+                posts = Requests.FindPostsByUsername(user["username"])
+                users = PageProfile.GetUsersByPostList(posts)
+                Output.Profile("mypage", username, password, user, posts, users, None, None)
+
 
         else:
             Output.Profile("password_incorrect", username, password, user, posts, None, None, None)

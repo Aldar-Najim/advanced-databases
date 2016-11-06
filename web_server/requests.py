@@ -1,5 +1,8 @@
+import json
+
 from httpapi import HttpApi
 from config import Config
+
 
 # this class handles different database requests using HttpApi
 
@@ -21,6 +24,14 @@ class Requests:
     @staticmethod
     def DownloadDocument(documentId):
         return HttpApi.GetDB(documentId)
+
+    @staticmethod
+    def DeleteDocument(documentId):
+        content = Requests.DownloadDocument(documentId)
+        newContent = '{"_id":"' + content["_id"] + '", "_rev":"' + content["_rev"] + '","_deleted":true}'
+        #newContent = '{"_id":"' + content["_id"] + '", "_rev":"' + content["_rev"] + '"}'
+        #newJson = json.dumps(newContent, separators=(',', ':'))
+        HttpApi.PostDB('', newContent)
 
     @staticmethod
     def UploadDocument(jsonContent):
