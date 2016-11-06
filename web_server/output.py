@@ -1,7 +1,6 @@
 import base64
 
 from collections import OrderedDict
-
 from config import Config
 
 # this class is responsible for generating html code for web-clients
@@ -368,14 +367,18 @@ class Output:
                             '&WATCHUSERNAME=' + foundUsers[i]["username"] + '&PAGE=WATCH">' +
                             foundUsers[i]["first_name"] + ' ' + foundUsers[i]["second_name"] + '</a></td>')
             if foundUsers[i]["relation"] == "-":
-                print("""
+                print('''
                     <td></td>
                     <td>
                         <form action="/cgi-bin/profile.py">
+                            <input type=hidden name=USERNAME value="''' + username + '''">
+                            <input type=hidden name=PASSWORD value="''' + password + '''">
                             <input type="submit" class="big_button" value="Add">
+                            <input type=hidden name=OTHERUSERNAME value="''' + foundUsers[i]["username"] + '''">
+                            <input type=hidden name=PAGE value="ADDFRIEND">
                         </form>
                     </td>
-                """)
+                ''')
             elif foundUsers[i]["relation"] == "proposed":
                 print("""
                     <td>added you</td>

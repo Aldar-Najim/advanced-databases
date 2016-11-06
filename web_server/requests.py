@@ -90,6 +90,12 @@ class Requests:
         return Requests.ExtractRows(json)
 
     @staticmethod
+    def AddRelationship(usernameAdding, usernameAdded):
+        relation = {"type":"relationship", "username1":usernameAdding, "username2":usernameAdded,"confirmed1":"yes", "confirmed2":"no"}
+        relationJson = json.dumps(relation, separators=(',', ':'))
+        Requests.UploadDocument(relationJson)
+
+    @staticmethod
     def FindUsersByBdayFname(dateOfBirth, firstName):
         if firstName:
             json = HttpApi.GetDB('_design/find/_view/user_by_bday_fname'
