@@ -66,6 +66,21 @@ class Requests:
         return (relationships_confirmed, relationships_proposed, relationships_pending)
 
     @staticmethod
+    def FindRelationshipProposed(username1, username2):
+        json = HttpApi.GetDB('_design/find/_view/relationship_proposed_by_username?key=["' + username1 + '","' + username2 + '"]')
+        return Requests.ExtractRowValues(json)
+
+    @staticmethod
+    def FindRelationshipConfirmed(username1, username2):
+        json = HttpApi.GetDB('_design/find/_view/relationship_confirmed_by_username?key=["' + username1 + '","' + username2 + '"]')
+        return Requests.ExtractRowValues(json)
+
+    @staticmethod
+    def FindRelationshipPending(username1, username2):
+        json = HttpApi.GetDB('_design/find/_view/relationship_pending_by_username?key=["' + username1 + '","' + username2 + '"]')
+        return Requests.ExtractRowValues(json)
+
+    @staticmethod
     def GenerateUUID():
         json = HttpApi.Get(Config.couchUrl + '_uuids')
         uuids = json["uuids"]
@@ -104,8 +119,32 @@ class Requests:
 
     @staticmethod
     def ConfirmRelationship(usernameConfirming, usernameConfirmed):
-        #Requests.DownloadDocument()
-        a=1
+        documentId = Requests.FindRelationshipProposed(usernameConfirming, usernameConfirmed)[0]
+        relation = Requests.DownloadDocument(documentId)
+        if (relation["username1"] == usernameConfirming):
+            relation["confirmed1"] = "yes"
+        else:
+            relation["confirmed2"] = "yes"
+        relationJson = json.dumps(relation, separators=(',', ':'))
+        Requests.UploadDocument(relationJson)
+
+    @staticmethod
+    def RemoveRelationship(usernameRemoving, usernameRemoved):
+        documentId = Requests.FindRelationshipConfirmed(usernameRemoving, usernameRemoved)[0]
+        relation = Requests.DownloadDocument(documentId)
+        if (relation["username1"] == usernameRemoving):
+            relation["confirmed1"] = "no"
+        else:
+            relation["confirmed2"] = "no"
+        relationJson = json.dumps(relation, separators=(',', ':'))
+        Requests.UploadDocument(relationJson)
+
+    @staticmethod
+    def RejectRelationship(usernameRejecting, usernameRejected):
+        documentId = Requests.FindRelationshipPending(usernameRejecting, usernameRejected)[0]
+        relation = Requests.DownloadDocument(documentId)
+        if (relation["username1"] == usernameRejecting):
+            Requests.DeleteDocument(documentId)
 
     @staticmethod
     def FindUsersByBdayFname(dateOfBirth, firstName):

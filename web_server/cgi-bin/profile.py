@@ -13,7 +13,7 @@ class PageProfile:
         result = {}
 
         for i in range(0, len(relationships)):
-            result[relationships[i][0]] = Requests.FindUserByUsername(relationships[i][0])[0]
+            result[relationships[i]] = Requests.FindUserByUsername(relationships[i])[0]
 
         return result
 
@@ -59,7 +59,7 @@ class PageProfile:
             self.watchUsername = form.getfirst("WATCHUSERNAME", None)
             self.postId = form.getfirst("POSTID", None)
             self.commentId = form.getfirst("COMMENTID", None)
-        elif self.page == "ADDFRIEND":
+        elif self.page == "ADDFRIEND" or self.page == "CONFIRMFRIEND" or self.page == "REMOVEFRIEND" or self.page == "REJECTFRIEND":
             self.otherUsername = form.getfirst("OTHERUSERNAME", None)
 
     def CheckHash(self):
@@ -111,22 +111,23 @@ class PageProfile:
                 users[i]["relation"] = "me"
                 found = True
 
-            for j in range(0, len(relationships[0])):
-                if users[i]["username"] == relationships[0][j][0]:
-                    users[i]["relation"] = "confirmed"
-                    found = True
-                    break
+            if not found:
+                for j in range(0, len(relationships[0])):
+                    if users[i]["username"] == relationships[0][j]:
+                        users[i]["relation"] = "confirmed"
+                        found = True
+                        break
 
             if not found:
                 for j in range(0, len(relationships[1])):
-                    if users[i]["username"] == relationships[1][j][0]:
+                    if users[i]["username"] == relationships[1][j]:
                         users[i]["relation"] = "proposed"
                         found = True
                         break
 
             if not found:
                 for j in range(0, len(relationships[2])):
-                    if users[i]["username"] == relationships[2][j][0]:
+                    if users[i]["username"] == relationships[2][j]:
                         users[i]["relation"] = "pending"
                         found = True
                         break
@@ -169,6 +170,15 @@ class PageProfile:
 
     def AddFriend(self):
         Requests.AddRelationship(self.username, self.otherUsername)
+
+    def ConfirmFriend(self):
+        Requests.ConfirmRelationship(self.username, self.otherUsername)
+
+    def RemoveFriend(self):
+        Requests.RemoveRelationship(self.username, self.otherUsername)
+
+    def RejectFriend(self):
+        Requests.RejectRelationship(self.username, self.otherUsername)
 
     def ShowProfile(self):
         watchUser = Requests.FindUserByUsername(self.watchUsername)
@@ -221,7 +231,7 @@ class PageProfile:
                 else:
                     Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
             elif self.page == "MYGROUPS":
-                Output.Profile("mygroups", self.username, self.password, self.user, None, None, None, None, None)
+                Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, None)
             elif self.page == "ADDCOMMENTPROFILE":
                 self.AddCommentPost()
                 self.ShowProfile()
@@ -240,6 +250,16 @@ class PageProfile:
                 Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
             elif self.page == "ADDFRIEND":
                 self.AddFriend()
+                Output.Profile("addfriend", self.username, self.password, None, None, None, None, None, None)
+            elif self.page == "CONFIRMFRIEND":
+                self.ConfirmFriend()
+                Output.Profile("confirmfriend", self.username, self.password, None, None, None, None, None, None)
+            elif self.page == "REMOVEFRIEND":
+                self.RemoveFriend()
+                Output.Profile("removefriend", self.username, self.password, None, None, None, None, None, None)
+            elif self.page == "REJECTFRIEND":
+                self.RejectFriend()
+                Output.Profile("rejectfriend", self.username, self.password, None, None, None, None, None, None)
         else:
             Output.Profile("password_incorrect", self.username, self.password, self.user, posts, None, None, None, None)
 

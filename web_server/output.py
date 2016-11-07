@@ -313,14 +313,18 @@ class Output:
                             '&WATCHUSERNAME=' + relationships_confirmed[i] + '&PAGE=WATCH">' +
                             users[relationships_confirmed[i]]["first_name"] + ' ' + users[relationships_confirmed[i]]["second_name"] + '</a></td>')
             print('<td>you are friends</td>')
-            print("""
+            print('''
                     <td>
                         <form action="/cgi-bin/profile.py">
+                            <input type=hidden name=USERNAME value="''' + username + '''">
+                            <input type=hidden name=PASSWORD value="''' + password + '''">
                             <input type="submit" class="big_button" value="Remove">
+                            <input type=hidden name=OTHERUSERNAME value="''' + relationships_confirmed[i] + '''">
+                            <input type=hidden name=PAGE value="REMOVEFRIEND">
                         </form>
                     </td>
                 </tr>
-            """)
+            ''')
 
         for i in range(0, len(relationships_proposed)):
             print('<tr>')
@@ -329,31 +333,38 @@ class Output:
                   '&WATCHUSERNAME=' + relationships_proposed[i] + '&PAGE=WATCH">' +
                   users[relationships_proposed[i]]["first_name"] + ' ' + users[relationships_proposed[i]]["second_name"] + '</a></td>')
             print('<td>added you</td>')
-            print("""
+            print('''
                         <td>
                             <form action="/cgi-bin/profile.py">
+                                <input type=hidden name=USERNAME value="''' + username + '''">
+                                <input type=hidden name=PASSWORD value="''' + password + '''">
                                 <input type="submit" class="big_button" value="Confirm">
+                                <input type=hidden name=OTHERUSERNAME value="''' + relationships_proposed[i] + '''">
+                                <input type=hidden name=PAGE value="CONFIRMFRIEND">
                             </form>
                         </td>
                     </tr>
-                """)
+                ''')
 
         for i in range(0, len(relationships_pending)):
             print('<tr>')
             print('<td>')
             print('<a href="' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
                   '&WATCHUSERNAME=' + relationships_pending[i] + '&PAGE=WATCH">' +
-                  users[relationships_pending[i]]["first_name"] + ' ' + users[relationships_pending[i]][
-                      "second_name"] + '</a></td>')
+                  users[relationships_pending[i]]["first_name"] + ' ' + users[relationships_pending[i]]["second_name"] + '</a></td>')
             print('<td>is pending</td>')
-            print("""
+            print('''
                             <td>
                                 <form action="/cgi-bin/profile.py">
+                                    <input type=hidden name=USERNAME value="''' + username + '''">
+                                    <input type=hidden name=PASSWORD value="''' + password + '''">
                                     <input type="submit" class="big_button" value="Reject">
+                                    <input type=hidden name=OTHERUSERNAME value="''' + relationships_pending[i] + '''">
+                                    <input type=hidden name=PAGE value="REJECTFRIEND">
                                 </form>
                             </td>
                         </tr>
-                    """)
+                    ''')
         print('</table>')
 
     @staticmethod
@@ -393,21 +404,29 @@ class Output:
                     </td>
                     ''')
             elif foundUsers[i]["relation"] == "pending":
-                print("""<td>is pending</td>
+                print('''<td>is pending</td>
                         <td>
                             <form action="/cgi-bin/profile.py">
+                                <input type=hidden name=USERNAME value="''' + username + '''">
+                                <input type=hidden name=PASSWORD value="''' + password + '''">
                                 <input type="submit" class="big_button" value="Reject">
+                                <input type=hidden name=OTHERUSERNAME value="''' + foundUsers[i]["username"] + '''">
+                                <input type=hidden name=PAGE value="REJECTFRIEND">
                             </form>
-                        </td>""")
+                        </td>''')
             elif foundUsers[i]["relation"] == "confirmed":
-                print("""
+                print('''
                     <td>you are friends</td>
                     <td>
                         <form action="/cgi-bin/profile.py">
+                            <input type=hidden name=USERNAME value="''' + username + '''">
+                            <input type=hidden name=PASSWORD value="''' + password + '''">
                             <input type="submit" class="big_button" value="Remove">
+                            <input type=hidden name=OTHERUSERNAME value="''' + foundUsers[i]["username"] + '''">
+                            <input type=hidden name=PAGE value="REMOVEFRIEND">
                         </form>
                     </td>
-                    """)
+                    ''')
             else:
                 print('<td>is you</td><td></td>')
 
@@ -467,7 +486,8 @@ class Output:
             Output.PrintHeader(buttonFileTo, buttonName, None, tabUrls)
         elif status == "mypage":
             Output.PrintHeader(buttonFileTo, buttonName, 1, tabUrls)
-        elif status == "myfriends" or status == "search" or status == "watch" or status == "addfriend" or status == "confirmfriend":
+        elif status == "myfriends" or status == "search" or status == "watch" \
+                or status == "addfriend" or status == "confirmfriend" or status == "removefriend" or status == "rejectfriend":
             Output.PrintHeader(buttonFileTo, buttonName, 2, tabUrls)
         elif status == "mygroups":
             Output.PrintHeader(buttonFileTo, buttonName, 3, tabUrls)
@@ -490,6 +510,14 @@ class Output:
                 print("Not found")
         elif status == "mygroups":
             print('My groups')
+        elif status == "addfriend":
+            print('Added')
+        elif status == "removefriend":
+            print('Removed')
+        elif status == "confirmfriend":
+            print('Confirmed')
+        elif status == "rejectfriend":
+            print('Rejected')
         else:
             print("Password is not correct")
 

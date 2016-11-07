@@ -1,0 +1,9 @@
+{
+  "type": "user",
+  "username": "Helen",
+  "first_name": "Elena",
+  "second_name": "Saranova",
+  "password_hash": "7856572a2c1e1a3d9e53873ee450d13b",
+  "date_of_birth": "1970-02-24",
+  "description": ""
+}

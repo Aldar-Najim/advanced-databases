@@ -1,0 +1,7 @@
+{
+  "confirmed2": "yes",
+  "username2": "aldar",
+  "username1": "Helen",
+  "type": "relationship",
+  "confirmed1": "yes"
+}

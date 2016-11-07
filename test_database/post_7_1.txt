@@ -1,0 +1,19 @@
+{
+  "date": "2016-11-07 22:30",
+  "type": "post",
+  "id_group": "-",
+  "username": "Helen",
+  "text": "This is a good network",
+  "comments": {
+    "c30e533236a885f29a115551eb0254ea": {
+      "date": "2016-11-07 22:38",
+      "username": "aldar",
+      "text": "Hello!"
+    },
+    "c30e533236a885f29a115551eb02612d": {
+      "date": "2016-11-07 22:40",
+      "username": "Helen",
+      "text": "What is this social network called?"
+    }
+  }
+}
