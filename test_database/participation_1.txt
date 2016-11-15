@@ -1,0 +1,5 @@
+{
+	"type":"participation",
+	"username":"aldar",
+	"group_id":"192f2278f1902ed67c4a3f7d64000b14"
+}

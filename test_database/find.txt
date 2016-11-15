@@ -23,6 +23,9 @@
     },
     "user_by_bday_fname": {
       "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit([doc.date_of_birth, doc.first_name], doc)\n}"
+    },
+	"groups_by_username": {
+      "map": "function (doc) {\n  if (doc.type == \"participation\")\n    emit(doc.username, doc.group_id)\n}"
     }
   },
   "language": "javascript"

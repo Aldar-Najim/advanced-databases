@@ -439,6 +439,19 @@ class Output:
             """)
         print('</table>')
 
+    @staticmethod
+    def PrintGroupSearchResults(groups):
+        print('<table class="table_colored">')
+        for group in groups:
+            print('''
+               <tr>
+                    <td>
+                        ''' + group["name"] + '''
+                    </td>
+                </tr>
+            ''')
+        print('</table>')
+
     # Auxiliary ----------------------------------------
 
     @staticmethod
@@ -473,7 +486,7 @@ class Output:
         print('</div></body></html>')
 
     @staticmethod
-    def Profile(status, username, password, user, posts, users, relationships, foundUsers, watchUsername):
+    def Profile(status, username, password, user, posts, users, relationships, foundUsers, foundGroups):
         Output.PrintHead()
         print('<body>')
 
@@ -509,7 +522,7 @@ class Output:
             else:
                 print("Not found")
         elif status == "mygroups":
-            print('My groups')
+            Output.PrintGroupSearchResults(foundGroups)
         elif status == "addfriend":
             print('Added')
         elif status == "removefriend":

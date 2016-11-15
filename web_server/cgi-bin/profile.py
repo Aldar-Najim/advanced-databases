@@ -191,6 +191,10 @@ class PageProfile:
             else:
                 Output.Profile("watch", self.username, self.password, watchUser, posts, users, None, None, None)
 
+    def SearchGroups(self):
+        self.groups = Requests.FindGroupsByUsername(self.username)
+
+
     def Execute(self):
         self.user = Requests.FindUserByUsername(self.username)
         if len(self.user) > 0:
@@ -231,7 +235,8 @@ class PageProfile:
                 else:
                     Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
             elif self.page == "MYGROUPS":
-                Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, None)
+                self.SearchGroups()
+                Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, self.groups)
             elif self.page == "ADDCOMMENTPROFILE":
                 self.AddCommentPost()
                 self.ShowProfile()

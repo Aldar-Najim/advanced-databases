@@ -112,6 +112,19 @@ class Requests:
         return Requests.ExtractRowValues(json)
 
     @staticmethod
+    def FindGroupsByUsername(username):
+        json = HttpApi.GetDB('_design/find/_view/groups_by_username?key="' + username + '"')
+        rows = Requests.ExtractRowValues(json)
+
+        result = []
+
+        for row in rows:
+            result.append(Requests.DownloadDocument(row))
+
+        return result
+
+
+    @staticmethod
     def AddRelationship(usernameAdding, usernameAdded):
         relation = {"type":"relationship", "username1":usernameAdding, "username2":usernameAdded,"confirmed1":"yes", "confirmed2":"no"}
         relationJson = json.dumps(relation, separators=(',', ':'))

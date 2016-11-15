@@ -1,0 +1,5 @@
+{
+	"type":"group",
+	"name":"Philosophy club",
+	"description":"Thinking of the essence of the world."
+}

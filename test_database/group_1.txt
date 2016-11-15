@@ -1,0 +1,5 @@
+{
+	"type":"group",
+	"name":"ULB computer science",
+	"description":"This group is designated to assemble all student of ULB"
+}

@@ -1,8 +1,13 @@
 cls
 
+:: Reset database -------------------------------------------------------------------------------------------------
+
 curl -X DELETE http://127.0.0.1:5984/social
 curl -X PUT http://127.0.0.1:5984/social
 
+:: Design documents ----------------------------------------------------------------------------------------------------
+
+curl -X PUT http://localhost:5984/social/_design/find -d @find.txt
 
 :: Users of the social network ---------------------------------------------------------------------------------------
 
@@ -29,6 +34,14 @@ curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd0068ea -d @re
 curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd00a63d -d @relationship_4.txt
 curl -X PUT http://127.0.0.1:5984/social/c30e533236a885f29a115551eb023ad3 -d @relationship_5.txt
 
-:: Design documents ----------------------------------------------------------------------------------------------------
+:: Groups -------------------------------------------------------------------------------------------------------
 
-curl -X PUT http://localhost:5984/social/_design/find -d @find.txt
+curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64000b14 -d @group_1.txt
+curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64001ab4 -d @group_2.txt
+
+:: Group participations ------------------------------------------------------------------------------------------
+
+curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64002435 -d @participation_1.txt
+curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64003449 -d @participation_2.txt
+curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64003908 -d @participation_3.txt
+
