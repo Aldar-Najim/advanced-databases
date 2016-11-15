@@ -440,13 +440,36 @@ class Output:
         print('</table>')
 
     @staticmethod
-    def PrintGroupSearchResults(groups):
+    def PrintGroupSearchResults(username, password, groups):
         print('<table class="table_colored">')
         for group in groups:
             print('''
                <tr>
                     <td>
                         ''' + group["name"] + '''
+                    </td>
+                    <td>''')
+            if group["joined"]:
+                print('''
+                <form action="/cgi-bin/profile.py">
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <input type="submit" class="big_button" value="Unjoin">
+                    <input type=hidden name=GROUP value="''' + group['_id'] + '''">
+                    <input type=hidden name=PAGE value="UNJOIN">
+                </form>
+            ''')
+        else:
+            print('''
+                <form action="/cgi-bin/profile.py">
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <input type="submit" class="big_button" value="Join">
+                    <input type=hidden name=GROUP value="''' + group['_id'] + '''">
+                    <input type=hidden name=PAGE value="UNJOIN">
+                </form>
+            ''')
+        print('''
                     </td>
                 </tr>
             ''')
@@ -522,7 +545,7 @@ class Output:
             else:
                 print("Not found")
         elif status == "mygroups":
-            Output.PrintGroupSearchResults(foundGroups)
+            Output.PrintGroupSearchResults(username, password, foundGroups)
         elif status == "addfriend":
             print('Added')
         elif status == "removefriend":

@@ -1,5 +1,6 @@
 {
 	"type":"group",
+	"id":"192f2278f1902ed67c4a3f7d64001ab4",
 	"name":"Philosophy club",
 	"description":"Thinking of the essence of the world."
 }

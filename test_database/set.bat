@@ -38,6 +38,7 @@ curl -X PUT http://127.0.0.1:5984/social/c30e533236a885f29a115551eb023ad3 -d @re
 
 curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64000b14 -d @group_1.txt
 curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64001ab4 -d @group_2.txt
+curl -X PUT http://127.0.0.1:5984/social/192f2278f1902ed67c4a3f7d64004ec1 -d @group_3.txt
 
 :: Group participations ------------------------------------------------------------------------------------------
 

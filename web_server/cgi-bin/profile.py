@@ -192,7 +192,22 @@ class PageProfile:
                 Output.Profile("watch", self.username, self.password, watchUser, posts, users, None, None, None)
 
     def SearchGroups(self):
-        self.groups = Requests.FindGroupsByUsername(self.username)
+        groupsAll = Requests.FindGroupsById()
+        ids = Requests.FindGroupsIdsUsername(self.username)
+        for group in groupsAll:
+            hasJoined = False
+
+            for id in ids:
+                if id == group["_id"]:
+                    hasJoined = True
+                    break
+
+            if hasJoined:
+                group["joined"] = True
+            else:
+                group["joined"] = False
+
+        self.groups = groupsAll
 
 
     def Execute(self):

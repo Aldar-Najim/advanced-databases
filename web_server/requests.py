@@ -112,17 +112,16 @@ class Requests:
         return Requests.ExtractRowValues(json)
 
     @staticmethod
-    def FindGroupsByUsername(username):
+    def FindGroupsIdsUsername(username):
         json = HttpApi.GetDB('_design/find/_view/groups_by_username?key="' + username + '"')
-        rows = Requests.ExtractRowValues(json)
-
-        result = []
-
-        for row in rows:
-            result.append(Requests.DownloadDocument(row))
-
+        result = Requests.ExtractRowValues(json)
         return result
 
+    @staticmethod
+    def FindGroupsById():
+        json = HttpApi.GetDB('_design/find/_view/groups_by_id')
+        result = Requests.ExtractRowValues(json)
+        return result
 
     @staticmethod
     def AddRelationship(usernameAdding, usernameAdded):
