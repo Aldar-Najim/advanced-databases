@@ -24,11 +24,14 @@
     "user_by_bday_fname": {
       "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit([doc.date_of_birth, doc.first_name], doc)\n}"
     },
-	"groups_by_username": {
-      "map": "function (doc) {\n  if (doc.type == \"participation\")\n    emit(doc.username, doc.group_id)\n}"
+	"groups_by_username_id": {
+      "map": "function (doc) {\n  if (doc.type == \"participation\")\n    emit([doc.username, doc.group_id], doc.group_id)\n}"
     },
 	"groups_by_id": {
       "map": "function (doc) {\n  if (doc.type == \"group\")\n    emit(doc._id, doc)\n}"
+    },
+	"participation": {
+      "map": "function (doc) {\n  if (doc.type == \"participation\")\n    emit([doc.username, doc.group_id], doc._id);\n}"
     }
   },
   "language": "javascript"

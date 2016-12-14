@@ -112,16 +112,27 @@ class Requests:
         return Requests.ExtractRowValues(json)
 
     @staticmethod
-    def FindGroupsIdsUsername(username):
-        json = HttpApi.GetDB('_design/find/_view/groups_by_username?key="' + username + '"')
-        result = Requests.ExtractRowValues(json)
-        return result
+    def FindGroupIdByUsernameGroupId(username, groupid):
+        if groupid:
+            json = HttpApi.GetDB('_design/find/_view/groups_by_username_id' +
+                                 '?key=["' + username + '","' + groupid + '"]')
+        else:
+            json = HttpApi.GetDB('_design/find/_view/groups_by_username_id?' +
+                                 '?startkey=["' + username + '"]&endkey=["' + username + '",{}]')
+
+        return Requests.ExtractRowValues(json)
 
     @staticmethod
     def FindGroupsById():
         json = HttpApi.GetDB('_design/find/_view/groups_by_id')
         result = Requests.ExtractRowValues(json)
         return result
+
+    @staticmethod
+    def FindParticipation(username, groupId):
+        json = HttpApi.GetDB('_design/find/_view/participation'
+                             '?key=["' + username + '","' + groupId + '"]')
+        return Requests.ExtractRowValues(json)
 
     @staticmethod
     def UserJoinsGroup(username, groupId):
