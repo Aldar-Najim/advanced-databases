@@ -447,6 +447,7 @@ class Output:
                <tr>
                     <td>
                         <a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                            '&GROUP=' + group["_id"] + '&PAGE=WATCHGROUP">' + group["name"] + '</a>' +
                     '''</td>
                     <td>''')
             if group["joined"]:
