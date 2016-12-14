@@ -446,8 +446,8 @@ class Output:
             print('''
                <tr>
                     <td>
-                        ''' + group["name"] + '''
-                    </td>
+                        <a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                    '''</td>
                     <td>''')
             if group["joined"]:
                 print('''

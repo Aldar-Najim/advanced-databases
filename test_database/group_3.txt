@@ -1,6 +1,6 @@
 {
 	"type":"group",
-	"id":"192f2278f1902ed67c4a3f7d64004ec1",
+	"_id":"192f2278f1902ed67c4a3f7d64004ec1",
 	"name":"Cat photos",
 	"description":"Gorgeous cat photos"
 }
