@@ -124,6 +124,12 @@ class Requests:
         return result
 
     @staticmethod
+    def UserJoinsGroup(username, groupId):
+        participation = {"type": "participation", "username":username, "group_id":groupId}
+        participationJson = json.dumps(participation, separators=(',', ':'))
+        Requests.UploadDocument(participationJson)
+
+    @staticmethod
     def AddRelationship(usernameAdding, usernameAdded):
         relation = {"type":"relationship", "username1":usernameAdding, "username2":usernameAdded,"confirmed1":"yes", "confirmed2":"no"}
         relationJson = json.dumps(relation, separators=(',', ':'))

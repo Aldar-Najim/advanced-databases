@@ -61,6 +61,8 @@ class PageProfile:
             self.commentId = form.getfirst("COMMENTID", None)
         elif self.page == "ADDFRIEND" or self.page == "CONFIRMFRIEND" or self.page == "REMOVEFRIEND" or self.page == "REJECTFRIEND":
             self.otherUsername = form.getfirst("OTHERUSERNAME", None)
+        elif self.page == "JOIN":
+            self.groupId = form.getfirst("GROUP", None)
 
     def CheckHash(self):
         """
@@ -209,6 +211,8 @@ class PageProfile:
 
         self.groups = groupsAll
 
+    def JoinGroup(self):
+        Requests.UserJoinsGroup(self.username, self.groupId)
 
     def Execute(self):
         self.user = Requests.FindUserByUsername(self.username)
@@ -250,6 +254,10 @@ class PageProfile:
                 else:
                     Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
             elif self.page == "MYGROUPS":
+                self.SearchGroups()
+                Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, self.groups)
+            elif self.page == "JOIN":
+                self.JoinGroup()
                 self.SearchGroups()
                 Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, self.groups)
             elif self.page == "ADDCOMMENTPROFILE":

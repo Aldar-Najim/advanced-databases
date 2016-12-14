@@ -459,14 +459,14 @@ class Output:
                     <input type=hidden name=PAGE value="UNJOIN">
                 </form>
             ''')
-        else:
-            print('''
+            else:
+                print('''
                 <form action="/cgi-bin/profile.py">
                     <input type=hidden name=USERNAME value="''' + username + '''">
                     <input type=hidden name=PASSWORD value="''' + password + '''">
                     <input type="submit" class="big_button" value="Join">
                     <input type=hidden name=GROUP value="''' + group['_id'] + '''">
-                    <input type=hidden name=PAGE value="UNJOIN">
+                    <input type=hidden name=PAGE value="JOIN">
                 </form>
             ''')
         print('''
