@@ -61,7 +61,7 @@ class PageProfile:
             self.commentId = form.getfirst("COMMENTID", None)
         elif self.page == "ADDFRIEND" or self.page == "CONFIRMFRIEND" or self.page == "REMOVEFRIEND" or self.page == "REJECTFRIEND":
             self.otherUsername = form.getfirst("OTHERUSERNAME", None)
-        elif self.page == "JOIN" or self.page == "UNJOIN":
+        elif self.page == "JOIN" or self.page == "UNJOIN" or self.page == "WATCHGROUP":
             self.groupId = form.getfirst("GROUP", None)
 
     def CheckHash(self):
@@ -258,6 +258,8 @@ class PageProfile:
                     Output.Profile("watch", self.username, self.password, watchUser, posts, users, None, None, None)
                 else:
                     Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
+            elif self.page == "WATCHGROUP":
+                posts = Req
             elif self.page == "MYGROUPS":
                 groups = self.SearchGroups(self.username, None)
                 Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, groups)
