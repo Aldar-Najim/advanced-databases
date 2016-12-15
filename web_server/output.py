@@ -161,6 +161,41 @@ class Output:
         Output.PrintPostSequence(username, password, user, posts, users)
 
     @staticmethod
+    def PrintGroup(username, password, user, posts, group):
+        print("""
+            <table class="table_colored">
+                <tr><h2>Group</h2></tr>
+                <tr>
+                    <td>Name:</td>
+                    <td>""" + group["name"] + """</td>
+                </tr>
+                <tr>
+                    <td>Description:</td>
+                    <td>""" + group["description"] + """</td>
+                </tr>
+            </table><br><br>""")
+
+        print('''
+            <tr><h2>Add post</h2></tr>
+            <table class="table_colored">
+                <form action="/cgi-bin/profile.py">
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <tr>
+                        <td>
+                            <input type="text" name="POST">
+                        </td>
+                        <td>
+                            <input type="submit" class="big_button" value="Add">
+                        </td>
+                    </tr>
+                    <input type=hidden name=GROUP value="''' + group["_id"] + '''">
+                    <input type=hidden name=PAGE value="ADDPOSTGROUP">
+                </form>
+            </table>
+        ''')
+
+    @staticmethod
     def PrintPostSequence(username, password, user, posts, users):
         for post in reversed(posts):
             print("""
@@ -526,7 +561,7 @@ class Output:
         elif status == "myfriends" or status == "search" or status == "watch" \
                 or status == "addfriend" or status == "confirmfriend" or status == "removefriend" or status == "rejectfriend":
             Output.PrintHeader(buttonFileTo, buttonName, 2, tabUrls)
-        elif status == "mygroups":
+        elif status == "mygroups" or status == "group":
             Output.PrintHeader(buttonFileTo, buttonName, 3, tabUrls)
 
         print('<div class="content"><br><br>')
@@ -545,6 +580,8 @@ class Output:
                 Output.PrintProfile(username, password, user, posts, users)
             else:
                 print("Not found")
+        elif status == "group":
+            Output.PrintGroup(username, password, user, posts, foundGroups)
         elif status == "mygroups":
             Output.PrintGroupSearchResults(username, password, foundGroups)
         elif status == "addfriend":

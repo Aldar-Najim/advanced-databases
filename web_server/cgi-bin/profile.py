@@ -260,7 +260,9 @@ class PageProfile:
                     Output.Profile("watch", self.username, self.password, self.user, posts, None, None, None, None)
             elif self.page == "WATCHGROUP":
                 posts = Requests.FindPostByGroupId(self.groupId)
-                pass
+                users = PageProfile.GetUsersByPostList(posts)
+                group = Requests.DownloadDocument(self.groupId)
+                Output.Profile("group", self.username, self.password, self.user, posts, users, None, None, group)
             elif self.page == "MYGROUPS":
                 groups = self.SearchGroups(self.username, None)
                 Output.Profile("mygroups", self.username, self.password, None, None, None, None, None, groups)

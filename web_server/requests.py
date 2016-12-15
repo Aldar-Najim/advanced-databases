@@ -47,15 +47,8 @@ class Requests:
 
     @staticmethod
     def FindPostByGroupId(groupId):
-        '''parsed = HttpApi.GetDB(
-            '_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]')
-        posts = Requests.ExtractRowValues(parsed)
-        postsFiltered = []
-        for post in posts:
-            if post["id_group"] == "-":
-                postsFiltered.append(post)
-        return postsFiltered'''
-        pass
+        parsed = HttpApi.GetDB('_design/find/_view/post_by_group_date?startkey=["' + groupId + '"]&endkey=["' + groupId + '",{}]')
+        return Requests.ExtractRowValues(parsed)
 
     @staticmethod
     def ExtractSecondUsers(dictRelations):
