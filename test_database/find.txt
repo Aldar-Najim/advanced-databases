@@ -1,7 +1,7 @@
 {
   "views": {
     "post_by_username_date": {
-      "map": "function (doc) {\n  if (doc.type==\"post\")\n    emit([doc.username, doc.date],doc)\n}"
+      "map": "function (doc) {\n  if (doc.type==\"post\")\n    if (doc.id_group==\"-\")\n      emit([doc.username, doc.date],doc)\n}"
     },
     "relationship_confirmed_by_username": {
       "map": "function (doc) {\n  if (doc.type == \"relationship\")\n  {\n    if ((doc.confirmed1 == \"yes\") && (doc.confirmed2 == \"yes\"))\n    {\n      emit([doc.username1, doc.username2], doc._id)\n      emit([doc.username2, doc.username1], doc._id)\n    }\n  }\n}"

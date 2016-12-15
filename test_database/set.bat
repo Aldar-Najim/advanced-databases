@@ -26,6 +26,10 @@ curl -X PUT http://127.0.0.1:5984/social/a8af1fde90e8f71681da7ce373015a56 -d @po
 curl -X PUT http://127.0.0.1:5984/social/c30e533236a885f29a115551eb0164cf -d @post_4_1.txt
 curl -X PUT http://127.0.0.1:5984/social/c30e533236a885f29a115551eb023afa -d @post_7_1.txt
 
+:: Posts in groups -----------------------------------------------------------------------------------------------------
+
+curl -X PUT http://127.0.0.1:5984/social/dc3399efe88b8c4c9636eaf4e101529f -d @post_1_group_1.txt
+
 :: Relationships -------------------------------------------------------------------------------------------------------
 
 curl -X PUT http://127.0.0.1:5984/social/04405f0ba7ed1e8806a1df27dd00219b -d @relationship_1.txt

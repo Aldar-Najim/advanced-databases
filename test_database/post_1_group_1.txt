@@ -1,0 +1,16 @@
+{
+	"type":"post",
+	"username":"john",
+	"id_group":"192f2278f1902ed67c4a3f7d64000b14",
+	"date":"2016-09-02 12:00",
+	"text":"Quelqu'un a une imprimante?",
+	"comments":
+	{
+		"dc3399efe88b8c4c9636eaf4e10169c5":
+		{
+			"username":"michelle",
+			"text":"Je l'ai ... mais la peinture est finie",
+			"date":"2016-09-02 12:10"
+		}
+	}
+}
