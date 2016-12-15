@@ -158,10 +158,10 @@ class Output:
                     </form>
                 </table>
             ''')
-        Output.PrintPostSequence(username, password, user, posts, users)
+        Output.PrintProfilePostSequence(username, password, user, posts, users)
 
     @staticmethod
-    def PrintGroup(username, password, user, posts, group):
+    def PrintGroup(username, password, user, posts, users, group):
         print("""
             <table class="table_colored">
                 <tr><h2>Group</h2></tr>
@@ -194,9 +194,65 @@ class Output:
                 </form>
             </table>
         ''')
+        Output.PrintGroupPostSequence(username, password, user, posts, group, users)
 
     @staticmethod
-    def PrintPostSequence(username, password, user, posts, users):
+    def PrintGroupPostSequence(username, password, user, posts, group, users):
+        for post in reversed(posts):
+            print("""
+                <table class="table_colored">
+                    <tr><h2>Post</h2></tr>
+                    <tr>
+                        <td><h2>""" + users[post["username"]]["first_name"] + " " + users[post["username"]]["second_name"] + """</h2></td>
+                        <td><h2>""" + post["text"] + """</h2></td>
+                        <td>""" + post["date"])
+
+            print('</td></tr>')
+
+            comments_ordered = OrderedDict(
+                sorted(post["comments"].items(), key=lambda t: t[1]["date"]))  # sorting by date
+
+            for comment_id, comment in comments_ordered.items():
+                name = users[comment["username"]]["first_name"] + " " + users[comment["username"]]["second_name"]
+
+                if username != comment["username"]:
+                    print('''
+                        <tr>
+                            <td><a href="''' + Config.webUrl + 'profile.py?USERNAME=' + username + '&PASSWORD=' + password +
+                          '&WATCHUSERNAME=' + comment["username"] + '&PAGE=WATCH">' + name + """</a></td>
+                            <td>""" + comment["text"] + """</td>
+                            <td>""" + comment["date"] + """
+                        </tr>""")
+                else:
+                    print('''
+                        <tr>
+                            <td>''' + name + """</td>
+                            <td>""" + comment["text"] + """</td>
+                            <td>""" + comment["date"])
+                    print('</td></tr>')
+
+            print('''
+            <tr>
+                <form action="/cgi-bin/profile.py">
+                    <input type=hidden name=USERNAME value="''' + username + '''">
+                    <input type=hidden name=PASSWORD value="''' + password + '''">
+                    <td></td>
+                    <td>
+                        <input type="text" name="COMMENT">
+                    </td>
+                    <td>
+                        <input type="submit" class="big_button" value="Add comment">
+                    </td>
+                    <input type=hidden name=POSTID value="''' + post["_id"] + '''">
+                    <input type=hidden name=GROUP value="''' + group["_id"] + '''">
+                    <input type=hidden name=PAGE value="ADDCOMMENTGROUP">
+                </form>
+            </tr>
+            ''')
+            print('</table><br><br>')
+
+    @staticmethod
+    def PrintProfilePostSequence(username, password, user, posts, users):
         for post in reversed(posts):
             print("""
                 <table class="table_colored">
@@ -581,7 +637,7 @@ class Output:
             else:
                 print("Not found")
         elif status == "group":
-            Output.PrintGroup(username, password, user, posts, foundGroups)
+            Output.PrintGroup(username, password, user, posts, users, foundGroups)
         elif status == "mygroups":
             Output.PrintGroupSearchResults(username, password, foundGroups)
         elif status == "addfriend":

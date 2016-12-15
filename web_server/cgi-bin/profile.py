@@ -51,8 +51,15 @@ class PageProfile:
             self.comment = form.getfirst("COMMENT", None)
             self.watchUsername = form.getfirst("WATCHUSERNAME", None)
             self.postId = form.getfirst("POSTID", None)
+        elif self.page == "ADDCOMMENTGROUP":
+            self.comment = form.getfirst("COMMENT", None)
+            self.groupId = form.getfirst("GROUP", None)
+            self.postId = form.getfirst("POSTID", None)
         elif self.page == "ADDPOSTPROFILE":
             self.content = form.getfirst("POST", None)
+        elif self.page == "ADDPOSTGROUP":
+            self.content = form.getfirst("POST", None)
+            self.groupId = form.getfirst("GROUP", None)
         elif self.page == "DELETEPOSTPROFILE":
             self.postId = form.getfirst("POSTID", None)
         elif self.page == "DELETECOMMENTPROFILE":
@@ -139,11 +146,11 @@ class PageProfile:
 
         return users
 
-    def AddPostProfile(self, content):
+    def AddPostProfile(self, content, username, groupId):
         document = {}
         document["type"] = "post"
-        document["username"] = self.username
-        document["id_group"] = "-"
+        document["username"] = username
+        document["id_group"] = groupId
         document["date"] = PageProfile.GetCurrentDate()
         document["text"] = content
         document["comments"] = {}
@@ -277,11 +284,23 @@ class PageProfile:
             elif self.page == "ADDCOMMENTPROFILE":
                 self.AddCommentPost()
                 self.ShowProfile()
+            elif self.page == "ADDCOMMENTGROUP":
+                self.AddCommentPost()
+                posts = Requests.FindPostByGroupId(self.groupId)
+                users = PageProfile.GetUsersByPostList(posts)
+                group = Requests.DownloadDocument(self.groupId)
+                Output.Profile("group", self.username, self.password, self.user, posts, users, None, None, group)
             elif self.page == "ADDPOSTPROFILE":
-                self.AddPostProfile(self.content)
+                self.AddPostProfile(self.content, self.username, "-")
                 posts = Requests.FindPostsByUsername(self.user["username"])
                 users = PageProfile.GetUsersByPostList(posts)
                 Output.Profile("mypage", self.username, self.password, self.user, posts, users, None, None, None)
+            elif self.page == "ADDPOSTGROUP":
+                self.AddPostProfile(self.content, self.username, self.groupId)
+                posts = Requests.FindPostByGroupId(self.groupId)
+                users = PageProfile.GetUsersByPostList(posts)
+                group = Requests.DownloadDocument(self.groupId)
+                Output.Profile("group", self.username, self.password, self.user, posts, users, None, None, group)
             elif self.page == "DELETECOMMENTPROFILE":
                 self.DeleteCommentProfile()
                 self.ShowProfile()
