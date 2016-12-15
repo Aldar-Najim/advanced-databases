@@ -459,7 +459,8 @@ class Output:
         print('</table>')
 
     @staticmethod
-    def PrintUserSearchResults(username, password, foundUsers):
+    def PrintUserSearchResults(username, password, foundUsers, totalUsers):
+        print('<p>Total users signed up = ', totalUsers, '</p>')
         print('<table class="table_colored">')
         for i in range(0, len(foundUsers)):
             print('''
@@ -630,7 +631,7 @@ class Output:
             Output.PrintUserSearchForm(username, password)
             Output.PrintRelationships(username, password, relationships, users)
         elif status == "search":
-            Output.PrintUserSearchResults(username, password, foundUsers)
+            Output.PrintUserSearchResults(username, password, foundUsers, users)
         elif status == "watch":
             if user:
                 Output.PrintProfile(username, password, user, posts, users)

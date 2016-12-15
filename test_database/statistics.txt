@@ -1,0 +1,9 @@
+{
+  "views": {
+    "users": {
+      "map": "function (doc) {\n  if (doc.type == \"user\")\n    emit(doc._id, 1)\n}",
+      "reduce": "_sum"
+    }
+  },
+  "language": "javascript"
+}

@@ -37,13 +37,19 @@ class Requests:
 
     @staticmethod
     def FindAllUsers():
-        json = HttpApi.GetDB('_design/find/_view/user_by_username')
+        json = HttpApi.GetDB('_design/find/_view/user_by_username?limit=100')
         return Requests.ExtractRowValues(json)
 
     @staticmethod
     def FindPostsByUsername(username):
         parsed = HttpApi.GetDB('_design/find/_view/post_by_username_date?startkey=["' + username + '"]&endkey=["' + username + '",{}]')
         return Requests.ExtractRowValues(parsed)
+
+    @staticmethod
+    def TotalUsers():
+        result = HttpApi.GetDB('_design/statistics/_view/users')
+        parsed = Requests.ExtractRowValues(result)
+        return parsed[0]
 
     @staticmethod
     def FindPostByGroupId(groupId):

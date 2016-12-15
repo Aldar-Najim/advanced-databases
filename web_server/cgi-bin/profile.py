@@ -255,7 +255,8 @@ class PageProfile:
                 relationships = Requests.FindRelationshipsByUsername(self.username)
                 users = self.SearchUsers()
                 self.TagUsersByRelations(users, relationships)
-                Output.Profile("search", self.username, self.password, self.user, None, None, relationships, users, None)
+                totalUsers = Requests.TotalUsers()
+                Output.Profile("search", self.username, self.password, self.user, None, totalUsers, relationships, users, None)
             elif self.page == "WATCH":
                 watchUser = Requests.FindUserByUsername(self.watchUsername)
                 if (len(watchUser) > 0):

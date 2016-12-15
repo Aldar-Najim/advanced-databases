@@ -8,6 +8,7 @@ curl -X PUT http://127.0.0.1:5984/social
 :: Design documents ----------------------------------------------------------------------------------------------------
 
 curl -X PUT http://localhost:5984/social/_design/find -d @find.txt
+curl -X PUT http://localhost:5984/social/_design/statistics -d @statistics.txt
 
 :: Users of the social network ---------------------------------------------------------------------------------------
 
